@@ -117,12 +117,12 @@
 
             <!-- Noise matrices -->
             <div class="setting-group">
-              <h3>Process Noise ($Q$)</h3>
+              <h3>Process Noise (Q)</h3>
               <p class="description">Standard deviation of process noise injected into actuation.</p>
               
               <div class="control-slider">
                 <div class="slider-header">
-                  <label for="slider-q-vel">Linear Velocity $\sigma_v$</label>
+                  <label for="slider-q-vel">Linear Velocity (σ<sub>v</sub>)</label>
                   <span id="val-q-vel">0.05</span>
                 </div>
                 <input type="range" id="slider-q-vel" min="0.0" max="0.3" step="0.01" value="0.05">
@@ -130,7 +130,7 @@
               
               <div class="control-slider">
                 <div class="slider-header">
-                  <label for="slider-q-omega">Angular Rate $\sigma_\omega$</label>
+                  <label for="slider-q-omega">Angular Rate (σ<sub>ω</sub>)</label>
                   <span id="val-q-omega">0.05</span>
                 </div>
                 <input type="range" id="slider-q-omega" min="0.0" max="0.3" step="0.01" value="0.05">
@@ -138,7 +138,7 @@
 
               <div class="control-slider">
                 <div class="slider-header">
-                  <label for="slider-q-steer">Steering Drift $\sigma_{steer}$</label>
+                  <label for="slider-q-steer">Steering Drift (σ<sub>steer</sub>)</label>
                   <span id="val-q-steer">0.02</span>
                 </div>
                 <input type="range" id="slider-q-steer" min="0.0" max="0.2" step="0.01" value="0.02">
@@ -146,12 +146,12 @@
             </div>
 
             <div class="setting-group">
-              <h3>Sensor & Measurement ($R$)</h3>
-              <p class="description">Sensor range limit, field of view, and observation error covariance ($R$).</p>
+              <h3>Sensor & Measurement (R)</h3>
+              <p class="description">Sensor range limit, field of view, and observation error covariance (R).</p>
               
               <div class="control-slider">
                 <div class="slider-header">
-                  <label for="slider-r-noise">Measurement Noise $\sigma_{lm}$</label>
+                  <label for="slider-r-noise">Measurement Noise (σ<sub>lm</sub>)</label>
                   <span id="val-r-noise">0.01</span>
                 </div>
                 <input type="range" id="slider-r-noise" min="0.001" max="0.1" step="0.001" value="0.01">
