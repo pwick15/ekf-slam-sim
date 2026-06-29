@@ -1,0 +1,17 @@
+{
+  "name": "ekf-slam-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5173",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-static": "^0.300.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

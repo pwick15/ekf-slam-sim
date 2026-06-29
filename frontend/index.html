@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EKF-SLAM Interactive Simulation</title>
+  <!-- Google Fonts: Inter and JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Area -->
+    <header class="app-header">
+      <div class="header-main">
+        <h1>EKF-SLAM <span class="accent">Simulation Engine</span></h1>
+        <p class="subtitle">Extended Kalman Filter for Simultaneous Localization and Mapping</p>
+      </div>
+      <div class="header-status">
+        <span class="status-indicator" id="connection-status"></span>
+        <span id="connection-text">Connecting...</span>
+      </div>
+    </header>
+
+    <!-- Main Visualizer Area -->
+    <main class="app-body">
+      <!-- Left side: Simulation Viewport -->
+      <section class="viewport-section">
+        <div class="canvas-container card">
+          <canvas id="sim-canvas"></canvas>
+          
+          <!-- Quick stats HUD floating on top of canvas -->
+          <div class="hud-stats">
+            <div class="hud-stat-box">
+              <span class="hud-label">Step</span>
+              <span class="hud-val" id="hud-step">0</span>
+            </div>
+            <div class="hud-stat-box">
+              <span class="hud-label">Pos Error</span>
+              <span class="hud-val error-text" id="hud-pos-error">0.000m</span>
+            </div>
+            <div class="hud-stat-box">
+              <span class="hud-label">aRMSE</span>
+              <span class="hud-val lmk-text" id="hud-armse">0.000m</span>
+            </div>
+            <div class="hud-stat-box">
+              <span class="hud-label">Cov Trace</span>
+              <span class="hud-val cov-text" id="hud-cov-trace">0.000</span>
+            </div>
+          </div>
+
+          <!-- Playback controller floating at the bottom of the canvas -->
+          <div class="playback-hud">
+            <button id="btn-play-pause" class="btn-play" title="Play/Pause">
+              <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="icon-pause hidden" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
+            <button id="btn-step" class="btn-icon" title="Step Single Frame">
+              <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            </button>
+            <button id="btn-reset" class="btn-icon" title="Reset Simulation">
+              <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+            </button>
+            
+            <div class="divider"></div>
+            
+            <div class="speed-control">
+              <label for="slider-speed">Speed</label>
+              <input type="range" id="slider-speed" min="0.25" max="4.0" step="0.25" value="1.0">
+              <span id="val-speed">1.0x</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right side: Sidebar controls / telemetry -->
+      <section class="sidebar-section">
+        <!-- Navigation Tabs -->
+        <div class="tabs-nav card">
+          <button class="tab-btn active" data-tab="tuning">Tuning & Setup</button>
+          <button class="tab-btn" data-tab="metrics">Live Telemetry</button>
+          <button class="tab-btn" data-tab="history">Run History</button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="tab-container card">
+          
+          <!-- TAB 1: TUNING -->
+          <div class="tab-content active" id="tab-tuning">
+            <!-- Setup & Environment parameters -->
+            <div class="setting-group">
+              <h3>Track & Environment</h3>
+              <div class="control-row">
+                <label for="select-track">Track Preset</label>
+                <select id="select-track" class="input-select">
+                  <option value="city_zigzag">City Zigzag (Sharp Corners)</option>
+                  <option value="oval">Oval Course</option>
+                  <option value="figure_8">Figure 8 (Lemniscate)</option>
+                  <option value="s_curve">S-Curve Loop</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label for="input-speed">Vehicle Speed (m/s)</label>
+                <input type="number" id="input-speed" class="input-number" min="0.2" max="3.0" step="0.1" value="1.0">
+              </div>
+            </div>
+
+            <!-- Noise matrices -->
+            <div class="setting-group">
+              <h3>Process Noise ($Q$)</h3>
+              <p class="description">Standard deviation of process noise injected into actuation.</p>
+              
+              <div class="control-slider">
+                <div class="slider-header">
+                  <label for="slider-q-vel">Linear Velocity $\sigma_v$</label>
+                  <span id="val-q-vel">0.05</span>
+                </div>
+                <input type="range" id="slider-q-vel" min="0.0" max="0.3" step="0.01" value="0.05">
+              </div>
+              
+              <div class="control-slider">
+                <div class="slider-header">
+                  <label for="slider-q-omega">Angular Rate $\sigma_\omega$</label>
+                  <span id="val-q-omega">0.05</span>
+                </div>
+                <input type="range" id="slider-q-omega" min="0.0" max="0.3" step="0.01" value="0.05">
+              </div>
+
+              <div class="control-slider">
+                <div class="slider-header">
+                  <label for="slider-q-steer">Steering Drift $\sigma_{steer}$</label>
+                  <span id="val-q-steer">0.02</span>
+                </div>
+                <input type="range" id="slider-q-steer" min="0.0" max="0.2" step="0.01" value="0.02">
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <h3>Sensor & Measurement ($R$)</h3>
+              <p class="description">Sensor range limit, field of view, and observation error covariance ($R$).</p>
+              
+              <div class="control-slider">
+                <div class="slider-header">
+                  <label for="slider-r-noise">Measurement Noise $\sigma_{lm}$</label>
+                  <span id="val-r-noise">0.01</span>
+                </div>
+                <input type="range" id="slider-r-noise" min="0.001" max="0.1" step="0.001" value="0.01">
+              </div>
+
+              <div class="control-slider">
+                <div class="slider-header">
+                  <label for="slider-sensor-range">Max Scan Range</label>
+                  <span id="val-sensor-range">4.0m</span>
+                </div>
+                <input type="range" id="slider-sensor-range" min="1.0" max="6.0" step="0.2" value="4.0">
+              </div>
+
+              <div class="control-slider">
+                <div class="slider-header">
+                  <label for="slider-sensor-fov">Sensor FOV</label>
+                  <span id="val-sensor-fov">180°</span>
+                </div>
+                <input type="range" id="slider-sensor-fov" min="30" max="360" step="10" value="180">
+              </div>
+
+              <div class="control-slider">
+                <div class="slider-header">
+                  <label for="slider-lm-init-cov">Initial Landmark Cov</label>
+                  <span id="val-lm-init-cov">10.0</span>
+                </div>
+                <input type="range" id="slider-lm-init-cov" min="1.0" max="50.0" step="1.0" value="10.0">
+              </div>
+            </div>
+
+            <!-- Apply / Reset settings buttons -->
+            <div class="btn-group">
+              <button id="btn-apply-restart" class="btn-primary">Restart Sim with Config</button>
+            </div>
+          </div>
+
+          <!-- TAB 2: LIVE METRICS -->
+          <div class="tab-content" id="tab-metrics">
+            <div class="telemetry-panel">
+              <div class="telemetry-grid">
+                <div class="telemetry-box">
+                  <span class="telemetry-box-label">Position Error</span>
+                  <span class="telemetry-box-val" id="metrics-pos-error">0.000 m</span>
+                  <div class="sparkline-container"><canvas id="sparkline-pos"></canvas></div>
+                </div>
+                <div class="telemetry-box">
+                  <span class="telemetry-box-label">Landmark RMSE</span>
+                  <span class="telemetry-box-val" id="metrics-lm-rmse">0.000 m</span>
+                  <div class="sparkline-container"><canvas id="sparkline-lm"></canvas></div>
+                </div>
+                <div class="telemetry-box">
+                  <span class="telemetry-box-label">Covariance Trace</span>
+                  <span class="telemetry-box-val" id="metrics-cov-trace">0.000</span>
+                  <div class="sparkline-container"><canvas id="sparkline-cov"></canvas></div>
+                </div>
+                <div class="telemetry-box">
+                  <span class="telemetry-box-label">Discovered Map</span>
+                  <span class="telemetry-box-val" id="metrics-discovered-lm">0 / 16</span>
+                </div>
+              </div>
+
+              <div class="chart-box card">
+                <h4>Localization Error Over Time</h4>
+                <div class="error-chart-container">
+                  <canvas id="error-history-chart"></canvas>
+                </div>
+              </div>
+
+              <div class="legend-box">
+                <h4>Visualization Legend</h4>
+                <ul class="legend-list">
+                  <li><span class="legend-dot color-track"></span>Track Reference Waypoints</li>
+                  <li><span class="legend-dot color-gt"></span>Ground Truth Vehicle Trail (Cyan)</li>
+                  <li><span class="legend-dot color-ekf"></span>EKF Estimated Trail (Amber)</li>
+                  <li><span class="legend-dot color-gt-veh"></span>Actual Vehicle (Cyan)</li>
+                  <li><span class="legend-dot color-ekf-veh"></span>Estimated Pose & Ellipse (Amber)</li>
+                  <li><span class="legend-dot color-lm-true"></span>True Landmarks (Green Diamonds)</li>
+                  <li><span class="legend-dot color-lm-est"></span>Estimated Landmarks & Ellipses</li>
+                  <li><span class="legend-dot color-sensor"></span>Active Landmark Observations</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: RUN HISTORY -->
+          <div class="tab-content" id="tab-history">
+            <div class="history-controls">
+              <button id="btn-save-current" class="btn-secondary">Save Current Run</button>
+              <button id="btn-clear-history" class="btn-danger">Clear All Runs</button>
+            </div>
+            
+            <div class="table-container">
+              <table id="table-runs" class="history-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Track</th>
+                    <th>Final Error</th>
+                    <th>LM aRMSE</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="table-runs-body">
+                  <tr>
+                    <td colspan="5" class="text-center">No saved runs in history.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="chart-box card compare-box hidden" id="comparison-section">
+              <h4>Compare Selected Runs (Position Error)</h4>
+              <div class="compare-chart-container">
+                <canvas id="compare-runs-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
