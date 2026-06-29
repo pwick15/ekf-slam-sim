@@ -1,7 +1,7 @@
 import asyncio
 import json
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -33,7 +33,7 @@ class SavedRun(BaseModel):
     id: str
     timestamp: str
     track_type: str
-    params: Dict[str, any]
+    params: Dict[str, Any]
     final_metrics: Dict[str, float]
     history: List[Dict[str, float]] # List of {timestep, pos_error, cov_trace, landmark_rmse}
 
@@ -41,7 +41,7 @@ def init_sim():
     global sim_engine
     sim_engine = SimulationEngine(settings)
     
-def get_run_history() -> List[Dict[str, any]]:
+def get_run_history() -> List[Dict[str, Any]]:
     if HISTORY_FILE.exists():
         try:
             with open(HISTORY_FILE, "r") as f:
@@ -50,7 +50,7 @@ def get_run_history() -> List[Dict[str, any]]:
             return []
     return []
 
-def save_run_history(runs: List[Dict[str, any]]):
+def save_run_history(runs: List[Dict[str, Any]]):
     try:
         with open(HISTORY_FILE, "w") as f:
             json.dump(runs, f, indent=2)
@@ -74,7 +74,7 @@ def get_config():
     }
 
 @app.post("/api/start")
-def start_simulation(params: Optional[Dict[str, any]] = None):
+def start_simulation(params: Optional[Dict[str, Any]] = None):
     """Starts/restarts simulation with optional parameter overrides."""
     global sim_engine, playback_task, is_playing
     # Cancel any active running task
@@ -142,7 +142,7 @@ def step_simulation(steps: int = 1):
     return last_state
 
 @app.post("/api/params")
-def update_params(params: Dict[str, any]):
+def update_params(params: Dict[str, Any]):
     """Dynamically updates EKF tuning parameters mid-simulation."""
     global sim_engine
     if sim_engine is None:

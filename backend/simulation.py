@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Any
 from backend.config import SimSettings
 from backend.ekf_slam import EKFSlam
 
@@ -167,7 +167,7 @@ class SimulationEngine:
         
         return float(omega_ideal)
 
-    def step(self) -> Dict[str, any]:
+    def step(self) -> Dict[str, Any]:
         """
         Advance the simulation by one timestep dt.
         Performs noise injection, kinematics update, sensor scan, and EKF update.

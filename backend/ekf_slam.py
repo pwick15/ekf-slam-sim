@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Any
 
 class EKFSlam:
     def __init__(self, Q_velocity_std: float = 0.05, Q_omega_std: float = 0.05, sig_lm: float = 0.01, initial_landmark_cov: float = 10.0):
@@ -187,7 +187,7 @@ class EKFSlam:
         """Returns the landmark state vector [lx1, ly1, ...] and its covariance matrix."""
         return self.x[3:], self.P[3:, 3:]
         
-    def get_landmark_positions(self) -> Dict[int, Dict[str, any]]:
+    def get_landmark_positions(self) -> Dict[int, Dict[str, Any]]:
         """Helper to get a dictionary of estimated landmark positions and their 2x2 covariances."""
         landmarks = {}
         for idx, lmk_id in enumerate(self.idx2num):
