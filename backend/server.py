@@ -129,6 +129,14 @@ def get_history():
         "ekf_history": sim_engine.history_ekf
     }
 
+@app.get("/api/math")
+def get_math():
+    """Returns a full mathematical snapshot of the filter's matrices at the current step."""
+    global sim_engine
+    if sim_engine is None:
+        init_sim()
+    return sim_engine.get_math_snapshot()
+
 @app.post("/api/step")
 def step_simulation(steps: int = 1):
     """Manually advances the simulation by N steps."""

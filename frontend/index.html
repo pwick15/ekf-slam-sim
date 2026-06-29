@@ -9,6 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/style.css">
+  <!-- KaTeX CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <!-- KaTeX JS -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -18,6 +22,10 @@
         <h1>EKF-SLAM <span class="accent">Simulation Engine</span></h1>
         <p class="subtitle">Extended Kalman Filter for Simultaneous Localization and Mapping</p>
       </div>
+      <button id="btn-toggle-math" class="btn-secondary" style="margin-left: auto; margin-right: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+        Math Explorer
+      </button>
       <div class="header-status">
         <span class="status-indicator" id="connection-status"></span>
         <span id="connection-text">Connecting...</span>
@@ -265,6 +273,69 @@
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- SLIDING MATH EXPLORER BOTTOM PANEL -->
+  <div id="math-explorer" class="math-explorer-drawer hidden">
+    <div class="drawer-header">
+      <div class="drawer-title-box">
+        <h2>EKF Mathematics & Matrix Explorer</h2>
+        <span class="drawer-tag">Educational Sandbox</span>
+        <span class="drawer-notice" id="math-notice">Pause simulation to view live values</span>
+      </div>
+      <button id="btn-close-math" class="btn-close" title="Close Explorer">&times;</button>
+    </div>
+    
+    <div class="drawer-body">
+      <!-- Left pane: Mathematical Steps & Explanations -->
+      <div class="math-pane card">
+        <div class="math-steps-tabs">
+          <button class="math-step-btn active" data-step="predict_x">1. State Predict (f)</button>
+          <button class="math-step-btn" data-step="predict_p">2. Covariance Predict (A, B)</button>
+          <button class="math-step-btn" data-step="sensor_h">3. Measurement Model (h)</button>
+          <button class="math-step-btn" data-step="correct">4. Correction (K, P)</button>
+          <button class="math-step-btn" data-step="augment">5. Augmentation</button>
+        </div>
+        
+        <div class="math-step-explain" id="math-explanation">
+          <!-- Dynamically populated via math_explorer.js -->
+        </div>
+      </div>
+
+      <!-- Right pane: Live Matrix Visualizer Grid -->
+      <div class="matrix-pane card">
+        <div class="matrix-pane-header">
+          <h3>Live Matrix Viewer</h3>
+          <div class="matrix-select-row">
+            <label for="select-matrix">Inspect Matrix:</label>
+            <select id="select-matrix" class="input-select">
+              <option value="x">State Vector (x)</option>
+              <option value="P">State Covariance (P)</option>
+              <option value="A">State Jacobian (A)</option>
+              <option value="B">Input Jacobian (B)</option>
+              <option value="C">Measurement Jacobian (C)</option>
+              <option value="K">Kalman Gain (K)</option>
+              <option value="innovation">Innovation (z - z_hat)</option>
+              <option value="R">Measurement Noise (R)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Rendered Matrix Grid Container -->
+        <div class="matrix-grid-scroll">
+          <div id="matrix-grid-container" class="matrix-grid-container">
+            <!-- Dynamically populated via math_explorer.js -->
+          </div>
+        </div>
+
+        <!-- Matrix hover cell explanation card -->
+        <div class="cell-info-card" id="cell-info-card">
+          <div class="card-empty-state">
+            Hover over any cell in the matrix grid to inspect its formula, derivative equations, and physical meaning.
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   
   <script type="module" src="/src/main.js"></script>

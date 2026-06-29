@@ -358,3 +358,38 @@ class SimulationEngine:
             return float(np.sqrt(armse_sum / n))
         except Exception:
             return 0.0
+
+    def get_math_snapshot(self) -> Dict[str, Any]:
+        """
+        Returns a detailed snapshot of the EKF SLAM mathematical state
+        including matrices and control inputs for educational inspection.
+        """
+        ekf = self.ekf
+        
+        # Check active measurements to form measurement noise covariance R
+        R_list = None
+        if ekf.last_observed_ids is not None and len(ekf.last_observed_ids) > 0:
+            R_list = (np.eye(len(ekf.last_observed_ids) * 2) * ekf.sig_lm).tolist()
+
+        return {
+            "timestep": self.timestep,
+            "x": ekf.x.tolist(),
+            "P": ekf.P.tolist(),
+            "idx2num": ekf.idx2num,
+            "dt": self.settings.dt,
+            "u": ekf.last_u,
+            "Q": ekf.Q_0.tolist(),
+            "A": ekf.last_A.tolist() if ekf.last_A is not None else None,
+            "B": ekf.last_B.tolist() if ekf.last_B is not None else None,
+            "C": ekf.last_C.tolist() if ekf.last_C is not None else None,
+            "z": ekf.last_z.tolist() if ekf.last_z is not None else None,
+            "z_hat": ekf.last_z_hat.tolist() if ekf.last_z_hat is not None else None,
+            "innovation": ekf.last_innovation.tolist() if ekf.last_innovation is not None else None,
+            "K": ekf.last_K.tolist() if ekf.last_K is not None else None,
+            "S": ekf.last_S.tolist() if ekf.last_S is not None else None,
+            "R": R_list,
+            "observed_ids": ekf.last_observed_ids,
+            "landmarks_true": self.landmarks_true.tolist(),
+            "gt_pose": self.gt_x.tolist()
+        }
+

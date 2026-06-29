@@ -301,9 +301,9 @@ export class UIManager {
     // Only render sparklines if the metrics tab is active
     if (this.activeTab !== 'metrics') return;
 
-    this._drawSparkline(this.sparklineCanvas.pos, this.posErrorHistory, '#00d4ff');
-    this._drawSparkline(this.sparklineCanvas.lm, this.lmRmseHistory, '#00ff88');
-    this._drawSparkline(this.sparklineCanvas.cov, this.covTraceHistory, '#ffb347');
+    this._drawSparkline(this.sparklineCanvas.pos, this.posErrorHistory, '#3b82f6');
+    this._drawSparkline(this.sparklineCanvas.lm, this.lmRmseHistory, '#10b981');
+    this._drawSparkline(this.sparklineCanvas.cov, this.covTraceHistory, '#f97316');
     
     this._drawMainChart();
   }
@@ -342,7 +342,7 @@ export class UIManager {
     ctx.lineTo(width, height);
     ctx.lineTo(0, height);
     ctx.closePath();
-    ctx.fillStyle = color.replace(')', ', 0.05)').replace('#00d4ff', 'rgba(0, 212, 255, 0.05)').replace('#00ff88', 'rgba(0, 255, 136, 0.05)').replace('#ffb347', 'rgba(255, 179, 71, 0.05)');
+    ctx.fillStyle = color.replace(')', ', 0.08)').replace('#3b82f6', 'rgba(59, 130, 246, 0.08)').replace('#10b981', 'rgba(16, 185, 129, 0.08)').replace('#f97316', 'rgba(249, 115, 22, 0.08)');
     ctx.fill();
     ctx.restore();
   }
@@ -372,7 +372,7 @@ export class UIManager {
     ctx.save();
     
     // Draw background grid lines (horizontal)
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+    ctx.strokeStyle = 'rgba(15, 23, 42, 0.04)';
     ctx.lineWidth = 1;
     
     const gridLines = 4;
@@ -392,11 +392,10 @@ export class UIManager {
       ctx.fillText(val.toFixed(2), padLeft - 6, y + 3);
     }
     
-    // Draw data path (Cyan glow curve)
-    ctx.strokeStyle = '#00d4ff';
+    // Draw data path (Indigo blue curve, no glow shadow)
+    ctx.strokeStyle = '#3b82f6';
     ctx.lineWidth = 2.0;
-    ctx.shadowBlur = 4;
-    ctx.shadowColor = 'rgba(0, 212, 255, 0.3)';
+    ctx.shadowBlur = 0;
     ctx.beginPath();
     
     this.posErrorHistory.forEach((val, idx) => {
@@ -418,8 +417,8 @@ export class UIManager {
     ctx.closePath();
     
     const grad = ctx.createLinearGradient(0, padTop, 0, padTop + chartH);
-    grad.addColorStop(0, 'rgba(0, 212, 255, 0.15)');
-    grad.addColorStop(1, 'rgba(0, 212, 255, 0.0)');
+    grad.addColorStop(0, 'rgba(59, 130, 246, 0.15)');
+    grad.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
     ctx.fillStyle = grad;
     ctx.fill();
     
@@ -524,7 +523,7 @@ export class UIManager {
     ctx.save();
     
     // Grid lines (horizontal)
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+    ctx.strokeStyle = 'rgba(15, 23, 42, 0.04)';
     ctx.lineWidth = 1;
     ctx.fillStyle = 'var(--text-secondary)';
     ctx.font = '8px monospace';
@@ -543,12 +542,12 @@ export class UIManager {
     
     // Draw each run with a distinct colored path
     const colors = [
-      '#00d4ff', // cyan
-      '#ffb347', // amber
-      '#00ff88', // green
-      '#ff4a4a', // red
-      '#a855f7', // purple
-      '#eab308'  // yellow
+      '#3b82f6', // Indigo blue
+      '#f97316', // Orange
+      '#10b981', // Emerald green
+      '#ef4444', // Coral red
+      '#8b5cf6', // Indigo purple
+      '#eab308'  // Amber yellow
     ];
     
     runs.forEach((run, rIdx) => {

@@ -2,6 +2,7 @@ import { CoordinateTransformer } from './math.js';
 import { TopDownRenderer } from './renderer.js';
 import { UIManager } from './ui.js';
 import { HistoryManager } from './history.js';
+import { MathExplorer } from './math_explorer.js';
 
 // Configuration
 const HOST = window.location.hostname;
@@ -18,6 +19,7 @@ let currentEKFCovariance = null;
 let observedLandmarkIds = [];
 let estimatedLandmarks = {};
 let trueLandmarks = [];
+let socketIsPlaying = false;
 let trackPoints = [];
 
 // Paths trails
@@ -35,6 +37,9 @@ const renderer = new TopDownRenderer(canvas, transformer);
 
 // History Manager
 const historyManager = new HistoryManager(BACKEND_URL);
+
+// Math Explorer
+const mathExplorer = new MathExplorer('math-explorer', BACKEND_URL);
 
 // UI Manager Callbacks
 const uiCallbacks = {
@@ -198,9 +203,15 @@ function connectWebSocket() {
       // Update sidebar telemetry panel
       uiManager.updateMetrics(data);
       
+      // Educational view update when stepping or paused
+      if (!socketIsPlaying && !document.getElementById('math-explorer').classList.contains('hidden')) {
+        mathExplorer.fetchMathState();
+      }
+      
     } else if (message.type === 'status') {
       const data = message.data;
       if (data.is_playing !== undefined) {
+        socketIsPlaying = data.is_playing;
         uiManager.updateStatus(data.is_playing);
       }
     }

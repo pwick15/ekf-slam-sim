@@ -20,6 +20,19 @@ class EKFSlam:
         # Landmark ID at idx2num[i] corresponds to state index 3 + 2*i and 3 + 2*i + 1
         self.idx2num: List[int] = []
 
+        # Mathematical snapshot variables for educational visualizer
+        self.last_A: Optional[np.ndarray] = None
+        self.last_B: Optional[np.ndarray] = None
+        self.last_u: Optional[List[float]] = None
+        
+        self.last_C: Optional[np.ndarray] = None
+        self.last_z: Optional[np.ndarray] = None
+        self.last_z_hat: Optional[np.ndarray] = None
+        self.last_innovation: Optional[np.ndarray] = None
+        self.last_K: Optional[np.ndarray] = None
+        self.last_S: Optional[np.ndarray] = None
+        self.last_observed_ids: List[int] = []
+
     @property
     def Q_0(self) -> np.ndarray:
         """Process noise covariance for inputs [v, omega]."""
@@ -49,6 +62,11 @@ class EKFSlam:
         # 3. Covariance prediction: P = A * P * A.T + B * Q_0 * B.T
         self.P = A @ self.P @ A.T + B @ self.Q_0 @ B.T
         
+        # Save prediction math snapshot
+        self.last_A = A.copy()
+        self.last_B = B.copy()
+        self.last_u = [lin_velocity, ang_velocity]
+        
         # 4. State prediction (Unicycle kinematics)
         self.x[0] = x_r + dt * np.cos(theta) * lin_velocity
         self.x[1] = y_r + dt * np.sin(theta) * lin_velocity
@@ -64,6 +82,13 @@ class EKFSlam:
         z: Observed body-frame landmark coordinates [z1_x, z1_y, z2_x, z2_y, ...] (1D array of shape 2*M)
         """
         if len(ids) == 0:
+            self.last_C = None
+            self.last_z = None
+            self.last_z_hat = None
+            self.last_innovation = None
+            self.last_K = None
+            self.last_S = None
+            self.last_observed_ids = []
             return
 
         # 1. Augment state vector with any newly seen landmarks
@@ -135,6 +160,15 @@ class EKFSlam:
         # Update state: x = x - K * (z_hat - z) -> matches EKF: x = x + K * (z - z_hat)
         innovation = z - z_hat
         self.x = self.x + K @ innovation
+        
+        # Save correction math snapshot
+        self.last_C = C.copy()
+        self.last_z = z.copy()
+        self.last_z_hat = z_hat.copy()
+        self.last_innovation = innovation.copy()
+        self.last_K = K.copy()
+        self.last_S = S.copy()
+        self.last_observed_ids = ids.copy()
         
         # Normalize theta to [-pi, pi]
         self.x[2] = (self.x[2] + np.pi) % (2.0 * np.pi) - np.pi
