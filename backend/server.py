@@ -27,35 +27,13 @@ playback_speed: float = 1.0
 is_playing: bool = False
 active_connections: List[WebSocket] = []
 
-HISTORY_FILE = CONFIG_PATH.parent / "run_history.json"
 
-class SavedRun(BaseModel):
-    id: str
-    timestamp: str
-    track_type: str
-    params: Dict[str, Any]
-    final_metrics: Dict[str, float]
-    history: List[Dict[str, float]] # List of {timestep, pos_error, cov_trace, landmark_rmse}
 
 def init_sim():
     global sim_engine
     sim_engine = SimulationEngine(settings)
     
-def get_run_history() -> List[Dict[str, Any]]:
-    if HISTORY_FILE.exists():
-        try:
-            with open(HISTORY_FILE, "r") as f:
-                return json.load(f)
-        except Exception:
-            return []
-    return []
 
-def save_run_history(runs: List[Dict[str, Any]]):
-    try:
-        with open(HISTORY_FILE, "w") as f:
-            json.dump(runs, f, indent=2)
-    except Exception as e:
-        print(f"Error saving run history: {e}")
 
 @app.on_event("startup")
 def startup_event():
@@ -180,24 +158,7 @@ def update_params(params: Dict[str, Any]):
     save_settings(sim_engine.settings)
     return {"status": "success", "settings": sim_engine.settings.model_dump()}
 
-@app.post("/api/history/save")
-def save_run(run: SavedRun):
-    """Saves a simulation run's metrics to local JSON history."""
-    runs = get_run_history()
-    runs.append(run.model_dump())
-    save_run_history(runs)
-    return {"status": "success", "count": len(runs)}
 
-@app.get("/api/history/runs")
-def get_runs():
-    """Retrieves all saved simulation runs."""
-    return get_run_history()
-
-@app.post("/api/history/clear")
-def clear_runs():
-    """Clears all saved simulation runs from the backend."""
-    save_run_history([])
-    return {"status": "success"}
 
 async def broadcast_state(state: dict):
     for connection in active_connections:

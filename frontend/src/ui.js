@@ -76,12 +76,7 @@ export class UIManager {
     // Main charts
     this.chartError = document.getElementById('error-history-chart');
     
-    // History tab controls
-    this.btnSaveCurrent = document.getElementById('btn-save-current');
-    this.btnClearHistory = document.getElementById('btn-clear-history');
-    this.tableRunsBody = document.getElementById('table-runs-body');
-    this.comparisonSection = document.getElementById('comparison-section');
-    this.chartCompare = document.getElementById('compare-runs-chart');
+
   }
 
   _bindEvents() {
@@ -132,17 +127,7 @@ export class UIManager {
       this.callbacks.onRestart(config);
     });
     
-    // Save current run
-    this.btnSaveCurrent.addEventListener('click', () => {
-      this.callbacks.onSaveCurrentRun();
-    });
-    
-    // Clear history
-    this.btnClearHistory.addEventListener('click', () => {
-      if (confirm("Are you sure you want to delete all saved simulation runs?")) {
-        this.callbacks.onClearHistory();
-      }
-    });
+
 
     // Handle resize
     window.addEventListener('resize', () => {
@@ -434,157 +419,5 @@ export class UIManager {
     ctx.restore();
   }
 
-  /**
-   * Refreshes the saved runs table.
-   */
-  updateRunsTable(runs) {
-    if (!this.tableRunsBody) return;
-    
-    if (runs.length === 0) {
-      this.tableRunsBody.innerHTML = `
-        <tr>
-          <td colspan="5" class="text-center">No saved runs in history.</td>
-        </tr>
-      `;
-      this.comparisonSection.classList.add('hidden');
-      return;
-    }
-    
-    this.tableRunsBody.innerHTML = '';
-    
-    // Render descending (newest first)
-    runs.slice().reverse().forEach((run, idx) => {
-      const tr = document.createElement('tr');
-      
-      const date = new Date(run.timestamp);
-      const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      
-      tr.innerHTML = `
-        <td>${timeStr}</td>
-        <td><span class="badge">${run.track_type}</span></td>
-        <td>${run.final_metrics.pos_error.toFixed(3)} m</td>
-        <td>${run.final_metrics.landmark_rmse.toFixed(3)} m</td>
-        <td>
-          <button class="btn-delete" data-id="${run.id}">Delete</button>
-        </td>
-      `;
-      
-      // Bind delete button
-      const btnDel = tr.querySelector('.btn-delete');
-      btnDel.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.callbacks.onDeleteRun(run.id);
-      });
-      
-      this.tableRunsBody.appendChild(tr);
-    });
 
-    // Draw multi-run comparison line chart
-    this.renderComparisonChart(runs);
-  }
-
-  renderComparisonChart(runs) {
-    const canvas = this.chartCompare;
-    if (!canvas || runs.length === 0) {
-      this.comparisonSection.classList.add('hidden');
-      return;
-    }
-    
-    // Show compare section if there's at least 1 run
-    this.comparisonSection.classList.remove('hidden');
-    
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width / window.devicePixelRatio;
-    const height = canvas.height / window.devicePixelRatio;
-    
-    ctx.clearRect(0, 0, width, height);
-    
-    // Find absolute maximum length of runs and maximum error to size axes
-    let maxLen = 0;
-    let maxErr = 0.1;
-    
-    runs.forEach(run => {
-      if (run.history.length > maxLen) maxLen = run.history.length;
-      run.history.forEach(h => {
-        if (h.pos_error > maxErr) maxErr = h.pos_error;
-      });
-    });
-    
-    if (maxLen < 2) return;
-    
-    const padLeft = 32;
-    const padBottom = 20;
-    const padTop = 10;
-    const padRight = 10;
-    
-    const chartW = width - padLeft - padRight;
-    const chartH = height - padBottom - padTop;
-    
-    ctx.save();
-    
-    // Grid lines (horizontal)
-    ctx.strokeStyle = 'rgba(15, 23, 42, 0.04)';
-    ctx.lineWidth = 1;
-    ctx.fillStyle = 'var(--text-secondary)';
-    ctx.font = '8px monospace';
-    ctx.textAlign = 'right';
-    
-    const gridLines = 4;
-    for (let i = 0; i <= gridLines; i++) {
-      const val = (maxErr * i) / gridLines;
-      const y = padTop + chartH - (i / gridLines) * chartH;
-      ctx.beginPath();
-      ctx.moveTo(padLeft, y);
-      ctx.lineTo(width - padRight, y);
-      ctx.stroke();
-      ctx.fillText(val.toFixed(2), padLeft - 6, y + 3);
-    }
-    
-    // Draw each run with a distinct colored path
-    const colors = [
-      '#3b82f6', // Indigo blue
-      '#f97316', // Orange
-      '#10b981', // Emerald green
-      '#ef4444', // Coral red
-      '#8b5cf6', // Indigo purple
-      '#eab308'  // Amber yellow
-    ];
-    
-    runs.forEach((run, rIdx) => {
-      const color = colors[rIdx % colors.length];
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      
-      run.history.forEach((h, hIdx) => {
-        const x = padLeft + (hIdx / (maxLen - 1)) * chartW;
-        const y = padTop + chartH - (h.pos_error / maxErr) * chartH;
-        
-        if (hIdx === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-      });
-      ctx.stroke();
-      
-      // Draw small legend key on chart
-      ctx.fillStyle = color;
-      ctx.fillRect(padLeft + 10 + rIdx*60, padTop, 6, 6);
-      ctx.fillStyle = 'var(--text-secondary)';
-      ctx.textAlign = 'left';
-      ctx.fillText(`Run ${rIdx+1}`, padLeft + 20 + rIdx*60, padTop + 6);
-    });
-    
-    // Bottom X-axis label
-    ctx.strokeStyle = 'var(--border-glass)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(padLeft, padTop);
-    ctx.lineTo(padLeft, padTop + chartH);
-    ctx.lineTo(width - padRight, padTop + chartH);
-    ctx.stroke();
-    
-    ctx.restore();
-  }
 }

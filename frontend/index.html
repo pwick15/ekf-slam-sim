@@ -97,7 +97,6 @@
         <div class="tabs-nav card">
           <button class="tab-btn active" data-tab="tuning">Tuning & Setup</button>
           <button class="tab-btn" data-tab="metrics">Live Telemetry</button>
-          <button class="tab-btn" data-tab="history">Run History</button>
         </div>
 
         <!-- Tab Contents -->
@@ -242,39 +241,7 @@
             </div>
           </div>
 
-          <!-- TAB 3: RUN HISTORY -->
-          <div class="tab-content" id="tab-history">
-            <div class="history-controls">
-              <button id="btn-save-current" class="btn-secondary">Save Current Run</button>
-              <button id="btn-clear-history" class="btn-danger">Clear All Runs</button>
-            </div>
-            
-            <div class="table-container">
-              <table id="table-runs" class="history-table">
-                <thead>
-                  <tr>
-                    <th>Timestamp</th>
-                    <th>Track</th>
-                    <th>Final Error</th>
-                    <th>LM aRMSE</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="table-runs-body">
-                  <tr>
-                    <td colspan="5" class="text-center">No saved runs in history.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
 
-            <div class="chart-box card compare-box hidden" id="comparison-section">
-              <h4>Compare Selected Runs (Position Error)</h4>
-              <div class="compare-chart-container">
-                <canvas id="compare-runs-chart"></canvas>
-              </div>
-            </div>
-          </div>
 
         </div>
       </section>

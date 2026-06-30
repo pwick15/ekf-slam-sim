@@ -1,7 +1,6 @@
 import { CoordinateTransformer } from './math.js';
 import { TopDownRenderer } from './renderer.js';
 import { UIManager } from './ui.js';
-import { HistoryManager } from './history.js';
 import { MathExplorer } from './math_explorer.js';
 import { TutorialManager } from './tutorial.js';
 
@@ -27,17 +26,13 @@ let trackPoints = [];
 let gtTrail = [];
 let ekfTrail = [];
 
-// Session metric history for the CURRENT run (to be saved in run history)
-let currentRunMetricsHistory = [];
+// Session metric history for the CURRENT run
 let lastMetrics = { pos_error: 0, landmark_rmse: 0, cov_trace: 0 };
 
 // Canvas & coordinate transformer
 const canvas = document.getElementById('sim-canvas');
 const transformer = new CoordinateTransformer(canvas);
 const renderer = new TopDownRenderer(canvas, transformer);
-
-// History Manager
-const historyManager = new HistoryManager(BACKEND_URL);
 
 // Math Explorer
 const mathExplorer = new MathExplorer('math-explorer', BACKEND_URL);
@@ -96,23 +91,6 @@ const uiCallbacks = {
     } catch (e) {
       console.error("Error updating parameters:", e);
     }
-  },
-  onSaveCurrentRun: async () => {
-    if (currentRunMetricsHistory.length === 0) {
-      alert("No simulation data to save. Run the simulation first!");
-      return;
-    }
-    const runs = await historyManager.saveRun(currentSettings, currentRunMetricsHistory, lastMetrics);
-    uiManager.updateRunsTable(runs);
-    alert("Simulation run saved successfully!");
-  },
-  onClearHistory: async () => {
-    const runs = await historyManager.clearHistory();
-    uiManager.updateRunsTable(runs);
-  },
-  onDeleteRun: async (id) => {
-    const runs = await historyManager.deleteRun(id);
-    uiManager.updateRunsTable(runs);
   }
 };
 
@@ -131,7 +109,6 @@ function resizeCanvas() {
 function resetTrails() {
   gtTrail = [];
   ekfTrail = [];
-  currentRunMetricsHistory = [];
   uiManager.resetHistory();
 }
 
@@ -197,12 +174,6 @@ function connectWebSocket() {
       
       // Capture run metrics history
       lastMetrics = data.metrics;
-      currentRunMetricsHistory.push({
-        timestep: data.timestep,
-        pos_error: lastMetrics.pos_error,
-        landmark_rmse: lastMetrics.landmark_rmse,
-        cov_trace: lastMetrics.cov_trace
-      });
       
       // Limit trail drawing sizes to last 2000 points
       if (gtTrail.length > 2000) gtTrail.shift();
@@ -289,10 +260,7 @@ async function init() {
   // Setup WebSocket connection
   connectWebSocket();
   
-  // Retrieve saved runs from server history
-  const runs = await historyManager.fetchRuns();
-  uiManager.updateRunsTable(runs);
-  
+
   // Start drawing frames
   requestAnimationFrame(drawFrame);
 }
