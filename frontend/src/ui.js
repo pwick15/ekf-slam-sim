@@ -36,7 +36,6 @@ export class UIManager {
     // Speed
     this.inputSpeed = document.getElementById('input-speed');
     this.inputSpeed = document.getElementById('input-speed');
-    this.btnApplyRestart = document.getElementById('btn-apply-restart');
     
     // Playback HUD
     this.btnPlayPause = document.getElementById('btn-play-pause');
@@ -111,7 +110,12 @@ export class UIManager {
     });
 
     this.btnReset.addEventListener('click', () => {
-      this.callbacks.onReset();
+      // Use current UI values and restart the simulation
+      if (this.callbacks.onRestart) {
+        this.callbacks.onRestart(this.getFormConfig());
+      } else {
+        this.callbacks.onReset();
+      }
     });
     
     if (this.btnRecenter) {
@@ -130,12 +134,7 @@ export class UIManager {
 
     if (this.btnCloseFullMath) {
       this.btnCloseFullMath.addEventListener('click', () => {
-        document.querySelector('.app-container').scrollIntoView({ behavior: 'smooth' });
-        
-        // Optionally close it after scrolling up
-        setTimeout(() => {
-          document.getElementById('math-explorer').classList.add('hidden');
-        }, 500); // Wait for smooth scroll
+        document.getElementById('math-explorer').classList.add('hidden');
       });
     }
 
@@ -172,12 +171,7 @@ export class UIManager {
       this.callbacks.onSpeedChange(val);
     });
 
-    // Restart configuration button
-    this.btnApplyRestart.addEventListener('click', () => {
-      const config = this.getFormConfig();
-      this.callbacks.onRestart(config);
-    });
-    
+
 
 
     // Handle resize

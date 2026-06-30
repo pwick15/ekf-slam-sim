@@ -38,8 +38,6 @@ export class MathExplorer {
       this.btnToggle.addEventListener('click', () => {
         this.container.classList.remove('hidden');
         this.fetchMathState();
-        // Scroll to show it
-        this.container.scrollIntoView({ behavior: 'smooth' });
       });
     }
 

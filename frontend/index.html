@@ -111,7 +111,7 @@
             <button id="btn-step" class="btn-icon" title="Step Single Frame">
               <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
             </button>
-            <button id="btn-reset" class="btn-icon" title="Reset Simulation">
+            <button id="btn-reset" class="btn-icon" title="Restart Simulation">
               <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
             </button>
             <button id="btn-recenter" class="btn-icon" title="Recenter View">
@@ -119,14 +119,10 @@
             </button>
             <div class="divider"></div>
             
-            <button id="btn-apply-restart" class="btn-primary tooltip-trigger" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.3rem; border-radius: 12px;">
-              <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor;"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-              Apply
-              <span class="tooltip">Apply slider values and restart simulation</span>
-            </button>
+
             <button id="btn-reset-tuning" class="btn-secondary tooltip-trigger" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.3rem; border-radius: 12px;">
               <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor;"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-              Defaults
+              Reset Parameters
               <span class="tooltip">Reset all sliders to good defaults</span>
             </button>
             <div class="divider"></div>
@@ -227,9 +223,9 @@
     </main>
     
     <!-- Full Width Underside Button -->
-    <button id="btn-open-full-math" class="btn-primary" style="width: 100%; border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 0.65rem; margin-top: 0.5rem; transition: all 0.3s ease;">
+    <button id="btn-open-full-math" class="btn-primary" style="width: 100%; border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 0.65rem; margin-top: -1.5rem; margin-bottom: 1rem; position: relative; z-index: 50; transition: all 0.3s ease;">
       <span style="font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: white;">Explore Live Math & State Data</span>
-      <svg class="bounce-arrow" viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: white;"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      <svg class="bounce-arrow" viewBox="0 0 24 24" style="width: 24px; height: 24px; fill: white;"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
     </button>
   </div>
 
