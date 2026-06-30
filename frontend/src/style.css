@@ -1682,3 +1682,52 @@ canvas#sim-canvas:active {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Rich HUD and Floating Legend */
+.hud-stats.rich-hud {
+  pointer-events: none;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hud-stats.rich-hud > * {
+  pointer-events: auto;
+}
+
+.hud-stat-box.rich {
+  min-width: 140px;
+  padding: 0.5rem 0.75rem;
+}
+
+.hud-stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.2rem;
+}
+
+.hud-stat-box.rich .sparkline-container {
+  height: 18px;
+  margin-top: 0.1rem;
+}
+
+.floating-legend {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  padding: 1rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.settings-panel {
+  padding: 1.5rem;
+  overflow-y: auto;
+  height: 100%;
+}
+
+

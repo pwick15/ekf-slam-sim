@@ -21,10 +21,7 @@ export class UIManager {
   }
 
   _initDomElements() {
-    // Tabs
-    this.tabButtons = document.querySelectorAll('.tab-btn');
-    this.tabContents = document.querySelectorAll('.tab-content');
-    
+
     // Sliders & value displays
     this.sliders = {
       qVel: { input: document.getElementById('slider-q-vel'), val: document.getElementById('val-q-vel'), suffix: '' },
@@ -55,39 +52,36 @@ export class UIManager {
       step: document.getElementById('hud-step'),
       posError: document.getElementById('hud-pos-error'),
       armse: document.getElementById('hud-armse'),
-      covTrace: document.getElementById('hud-cov-trace')
+      covTrace: document.getElementById('hud-cov-trace'),
+      discoveredLm: document.getElementById('hud-discovered-lm')
     };
 
-    // Telemetry text boxes
-    this.telemetry = {
-      posError: document.getElementById('metrics-pos-error'),
-      lmRmse: document.getElementById('metrics-lm-rmse'),
-      covTrace: document.getElementById('metrics-cov-trace'),
-      discoveredLm: document.getElementById('metrics-discovered-lm')
-    };
-    
+    // Legend Popup
+    this.btnLegend = document.getElementById('btn-legend');
+    this.legendPopup = document.getElementById('legend-popup');
+    this.btnCloseLegend = document.getElementById('btn-close-legend');
+
     // Sparkline canvases
     this.sparklineCanvas = {
       pos: document.getElementById('sparkline-pos'),
       lm: document.getElementById('sparkline-lm'),
       cov: document.getElementById('sparkline-cov')
     };
-    
-    // Main charts
-    this.chartError = document.getElementById('error-history-chart');
-    
 
   }
 
   _bindEvents() {
-    // Tab switching
-    this.tabButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetTab = btn.getAttribute('data-tab');
-        this.switchTab(targetTab);
+    // Legend toggling
+    if (this.btnLegend) {
+      this.btnLegend.addEventListener('click', () => {
+        this.legendPopup.classList.toggle('hidden');
       });
-    });
-
+    }
+    if (this.btnCloseLegend) {
+      this.btnCloseLegend.addEventListener('click', () => {
+        this.legendPopup.classList.add('hidden');
+      });
+    }
     // Sync sliders values real-time
     Object.entries(this.sliders).forEach(([key, slider]) => {
       slider.input.addEventListener('input', () => {
@@ -134,21 +128,6 @@ export class UIManager {
       this.resizeCharts();
       this.renderCharts();
     });
-  }
-
-  switchTab(tabName) {
-    this.activeTab = tabName;
-    
-    this.tabButtons.forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
-    });
-    
-    this.tabContents.forEach(content => {
-      content.classList.toggle('active', content.id === `tab-${tabName}`);
-    });
-
-    this.resizeCharts();
-    this.renderCharts();
   }
 
   _notifyParamUpdates() {
@@ -244,12 +223,8 @@ export class UIManager {
     this.hud.armse.textContent = `${m.landmark_rmse.toFixed(3)}m`;
     this.hud.covTrace.textContent = m.cov_trace.toFixed(3);
     
-    this.telemetry.posError.textContent = `${m.pos_error.toFixed(3)} m`;
-    this.telemetry.lmRmse.textContent = `${m.landmark_rmse.toFixed(3)} m`;
-    this.telemetry.covTrace.textContent = m.cov_trace.toFixed(3);
-    
     const discovered = stateData.landmarks ? Object.keys(stateData.landmarks).length : 0;
-    this.telemetry.discoveredLm.textContent = `${discovered} / ${this.totalLandmarks || 16}`;
+    this.hud.discoveredLm.textContent = `${discovered} / ${this.totalLandmarks || 16}`;
     
     // 2. Append to history buffers for graphing
     this.posErrorHistory.push(m.pos_error);
@@ -283,9 +258,6 @@ export class UIManager {
   }
 
   renderCharts() {
-    // Only render sparklines if the metrics tab is active
-    if (this.activeTab !== 'metrics') return;
-
     this._drawSparkline(this.sparklineCanvas.pos, this.posErrorHistory, '#3b82f6');
     this._drawSparkline(this.sparklineCanvas.lm, this.lmRmseHistory, '#10b981');
     this._drawSparkline(this.sparklineCanvas.cov, this.covTraceHistory, '#f97316');

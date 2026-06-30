@@ -45,23 +45,61 @@
           <canvas id="sim-canvas"></canvas>
           
           <!-- Quick stats HUD floating on top of canvas -->
-          <div class="hud-stats">
+          <div class="hud-stats rich-hud">
+            <div class="hud-stat-box rich">
+              <div class="hud-stat-header">
+                <span class="hud-label">Pos Error</span>
+                <span class="hud-val error-text" id="hud-pos-error">0.000m</span>
+              </div>
+              <div class="sparkline-container"><canvas id="sparkline-pos"></canvas></div>
+            </div>
+            
+            <div class="hud-stat-box rich">
+              <div class="hud-stat-header">
+                <span class="hud-label">aRMSE</span>
+                <span class="hud-val lmk-text" id="hud-armse">0.000m</span>
+              </div>
+              <div class="sparkline-container"><canvas id="sparkline-lm"></canvas></div>
+            </div>
+
+            <div class="hud-stat-box rich">
+              <div class="hud-stat-header">
+                <span class="hud-label">Cov Trace</span>
+                <span class="hud-val cov-text" id="hud-cov-trace">0.000</span>
+              </div>
+              <div class="sparkline-container"><canvas id="sparkline-cov"></canvas></div>
+            </div>
+
+            <div class="hud-stat-box rich">
+              <div class="hud-stat-header">
+                <span class="hud-label">Discovered</span>
+                <span class="hud-val" id="hud-discovered-lm">0 / 16</span>
+              </div>
+            </div>
+
             <div class="hud-stat-box">
               <span class="hud-label">Step</span>
               <span class="hud-val" id="hud-step">0</span>
             </div>
-            <div class="hud-stat-box">
-              <span class="hud-label">Pos Error</span>
-              <span class="hud-val error-text" id="hud-pos-error">0.000m</span>
+            
+            <button id="btn-legend" class="btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; border-radius: 4px; border: 1px solid var(--border-glass);">Legend ⓘ</button>
+          </div>
+          
+          <div id="legend-popup" class="legend-box floating-legend hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <h4 style="margin:0;">Visualization Legend</h4>
+              <button id="btn-close-legend" class="btn-icon" style="width: 20px; height: 20px;">&times;</button>
             </div>
-            <div class="hud-stat-box">
-              <span class="hud-label">aRMSE</span>
-              <span class="hud-val lmk-text" id="hud-armse">0.000m</span>
-            </div>
-            <div class="hud-stat-box">
-              <span class="hud-label">Cov Trace</span>
-              <span class="hud-val cov-text" id="hud-cov-trace">0.000</span>
-            </div>
+            <ul class="legend-list">
+              <li><span class="legend-dot color-track"></span>Track Reference Waypoints</li>
+              <li><span class="legend-dot color-gt"></span>Ground Truth Vehicle Trail (Cyan)</li>
+              <li><span class="legend-dot color-ekf"></span>EKF Estimated Trail (Amber)</li>
+              <li><span class="legend-dot color-gt-veh"></span>Actual Vehicle (Cyan)</li>
+              <li><span class="legend-dot color-ekf-veh"></span>Estimated Pose & Ellipse (Amber)</li>
+              <li><span class="legend-dot color-lm-true"></span>True Landmarks (Green Diamonds)</li>
+              <li><span class="legend-dot color-lm-est"></span>Estimated Landmarks & Ellipses</li>
+              <li><span class="legend-dot color-sensor"></span>Active Landmark Observations</li>
+            </ul>
           </div>
 
           <!-- Playback controller floating at the bottom of the canvas -->
@@ -88,19 +126,9 @@
         </div>
       </section>
 
-      <!-- Right side: Sidebar controls / telemetry -->
+      <!-- Right side: Settings controls -->
       <section class="sidebar-section">
-        <!-- Navigation Tabs -->
-        <div class="tabs-nav card">
-          <button class="tab-btn active" data-tab="tuning">Tuning & Setup</button>
-          <button class="tab-btn" data-tab="metrics">Live Telemetry</button>
-        </div>
-
-        <!-- Tab Contents -->
-        <div class="tab-container card">
-          
-          <!-- TAB 1: TUNING -->
-          <div class="tab-content active" id="tab-tuning">
+        <div class="settings-panel card">
             <!-- Setup & Environment parameters -->
             <div class="setting-group">
               <h3>Track & Environment</h3>
@@ -187,55 +215,7 @@
             <!-- Apply / Reset settings buttons -->
             <div class="btn-group">
               <button id="btn-apply-restart" class="btn-primary">Restart Sim with Config</button>
-            </div>
           </div>
-
-          <!-- TAB 2: LIVE METRICS -->
-          <div class="tab-content" id="tab-metrics">
-            <div class="telemetry-panel">
-              <div class="telemetry-grid">
-                <div class="telemetry-box">
-                  <span class="telemetry-box-label">Position Error <span class="tooltip-trigger">ⓘ<span class="tooltip">Euclidean distance between the true robot position and the EKF's estimated position.</span></span></span>
-                  <span class="telemetry-box-val" id="metrics-pos-error">0.000 m</span>
-                  <div class="sparkline-container"><canvas id="sparkline-pos"></canvas></div>
-                </div>
-                <div class="telemetry-box">
-                  <span class="telemetry-box-label">Landmark RMSE <span class="tooltip-trigger">ⓘ<span class="tooltip">Root Mean Square Error of all currently estimated landmark positions compared to their true locations.</span></span></span>
-                  <span class="telemetry-box-val" id="metrics-lm-rmse">0.000 m</span>
-                  <div class="sparkline-container"><canvas id="sparkline-lm"></canvas></div>
-                </div>
-                <div class="telemetry-box">
-                  <span class="telemetry-box-label">Covariance Trace <span class="tooltip-trigger">ⓘ<span class="tooltip">Sum of the diagonal elements of the covariance matrix. Represents the total overall uncertainty in the system.</span></span></span>
-                  <span class="telemetry-box-val" id="metrics-cov-trace">0.000</span>
-                  <div class="sparkline-container"><canvas id="sparkline-cov"></canvas></div>
-                </div>
-                <div class="telemetry-box">
-                  <span class="telemetry-box-label">Discovered Landmarks <span class="tooltip-trigger">ⓘ<span class="tooltip">Number of unique landmarks observed by the robot at least once out of the total available map.</span></span></span>
-                  <span class="telemetry-box-val" id="metrics-discovered-lm">0 / 16</span>
-                </div>
-              </div>
-
-
-
-              <div class="legend-box">
-                <h4>Visualization Legend</h4>
-                <ul class="legend-list">
-                  <li><span class="legend-dot color-track"></span>Track Reference Waypoints</li>
-                  <li><span class="legend-dot color-gt"></span>Ground Truth Vehicle Trail (Cyan)</li>
-                  <li><span class="legend-dot color-ekf"></span>EKF Estimated Trail (Amber)</li>
-                  <li><span class="legend-dot color-gt-veh"></span>Actual Vehicle (Cyan)</li>
-                  <li><span class="legend-dot color-ekf-veh"></span>Estimated Pose & Ellipse (Amber)</li>
-                  <li><span class="legend-dot color-lm-true"></span>True Landmarks (Green Diamonds)</li>
-                  <li><span class="legend-dot color-lm-est"></span>Estimated Landmarks & Ellipses</li>
-                  <li><span class="legend-dot color-sensor"></span>Active Landmark Observations</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-
-
-        </div>
       </section>
     </main>
   </div>
