@@ -64,16 +64,22 @@ export class TopDownRenderer {
   }
 
   clear() {
-    // Clear with a nice radial/linear gradient matching light CSS
     const width = this.canvas.width;
     const height = this.canvas.height;
+    const isDark = document.body.classList.contains('dark-theme');
     
     const grad = this.ctx.createRadialGradient(
       width / 2, height / 2, 10,
       width / 2, height / 2, Math.max(width, height)
     );
-    grad.addColorStop(0, '#f8fafc'); // Soft slate-50
-    grad.addColorStop(1, '#f1f5f9'); // Soft slate-100
+    
+    if (isDark) {
+      grad.addColorStop(0, '#0d0f2b');
+      grad.addColorStop(1, '#060713');
+    } else {
+      grad.addColorStop(0, '#fbfaf7'); // Cozy warm beige
+      grad.addColorStop(1, '#f3ede2'); // Warm sand beige
+    }
     
     this.ctx.fillStyle = grad;
     this.ctx.fillRect(0, 0, width, height);
@@ -84,7 +90,8 @@ export class TopDownRenderer {
 
   _drawGrid() {
     this.ctx.save();
-    this.ctx.strokeStyle = 'rgba(15, 23, 42, 0.03)'; // soft slate-900 grid
+    const isDark = document.body.classList.contains('dark-theme');
+    this.ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.02)' : 'rgba(28, 25, 23, 0.03)';
     this.ctx.lineWidth = 1;
     
     const step = 0.5; // Grid lines every 0.5 meters
@@ -117,7 +124,7 @@ export class TopDownRenderer {
     }
     
     // Draw arena boundaries [0, 5] meters
-    this.ctx.strokeStyle = 'rgba(15, 23, 42, 0.08)'; // soft slate-900 border
+    this.ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(28, 25, 23, 0.08)';
     this.ctx.lineWidth = 1.5;
     const p00 = this.transformer.toCanvas(0, 0);
     const p55 = this.transformer.toCanvas(5, 5);
@@ -130,9 +137,10 @@ export class TopDownRenderer {
     if (!points || points.length === 0) return;
     
     this.ctx.save();
+    const isDark = document.body.classList.contains('dark-theme');
     
     // Subtle road casing
-    this.ctx.strokeStyle = 'rgba(15, 23, 42, 0.02)'; // soft slate casing
+    this.ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(28, 25, 23, 0.02)';
     this.ctx.lineWidth = this.transformer.distToCanvas(0.2); // 20cm road width
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
@@ -149,7 +157,7 @@ export class TopDownRenderer {
     this.ctx.stroke();
     
     // Center dashed path
-    this.ctx.strokeStyle = 'rgba(15, 23, 42, 0.12)'; // clean dashed reference line
+    this.ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(28, 25, 23, 0.12)';
     this.ctx.lineWidth = 1.5;
     this.ctx.setLineDash([4, 6]);
     this.ctx.beginPath();

@@ -1,6 +1,6 @@
 {
   "dt": 0.1,
-  "Q_velocity_std": 0.05,
+  "Q_velocity_std": 0.12,
   "Q_omega_std": 0.05,
   "steer_noise_std": 0.02,
   "sensor_range": 6.0,

@@ -3,6 +3,7 @@ import { TopDownRenderer } from './renderer.js';
 import { UIManager } from './ui.js';
 import { HistoryManager } from './history.js';
 import { MathExplorer } from './math_explorer.js';
+import { TutorialManager } from './tutorial.js';
 
 // Configuration
 const HOST = window.location.hostname;
@@ -40,6 +41,13 @@ const historyManager = new HistoryManager(BACKEND_URL);
 
 // Math Explorer
 const mathExplorer = new MathExplorer('math-explorer', BACKEND_URL);
+
+// Tutorial Manager
+const tutorialManager = new TutorialManager({
+  onOpen: () => {
+    sendWsMessage({ type: 'pause' });
+  }
+});
 
 // UI Manager Callbacks
 const uiCallbacks = {
@@ -256,6 +264,23 @@ function drawFrame() {
 // Initializer
 async function init() {
   window.addEventListener('resize', resizeCanvas);
+  
+  // Theme initialization
+  const btnToggleTheme = document.getElementById('btn-toggle-theme');
+  if (btnToggleTheme) {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+    }
+    btnToggleTheme.addEventListener('click', () => {
+      document.body.classList.toggle('dark-theme');
+      const isDark = document.body.classList.contains('dark-theme');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      
+      // Refresh math matrices shading!
+      mathExplorer.renderMatrixGrid();
+    });
+  }
   
   // Trigger initial canvas size calculation
   resizeCanvas();

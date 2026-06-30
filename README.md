@@ -6,6 +6,8 @@ An aesthetically stunning, real-time web-based simulation of the **Extended Kalm
 
 ## Core Features (Beyond the Obvious)
 
+*   **Immersive Onboarding & Educational Slides**:
+    *   A beautifully designed slide deck that loads on startup (or via the glowing header button) explaining the mathematics behind EKF-SLAM (dead reckoning, prediction/correction loops, state vectors, and covariance matrices) using live KaTeX rendering.
 *   **Bilateral Noise Modeling (Gaussian)**:
     *   *Actuation Process Noise ($Q$)*: The ground truth vehicle kinematics are perturbed by Gaussian noise on commanded linear velocity ($v$) and angular velocity ($\omega$). The EKF only has access to the *commanded* (noisy) inputs, mirroring real-world encoder/odometry limits.
     *   *Controller steering noise ($\sigma_{steer}$)*: Steering controls are injected with noise to simulate imperfect track-line detection.
