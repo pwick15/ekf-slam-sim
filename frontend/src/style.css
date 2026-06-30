@@ -1653,3 +1653,57 @@ canvas#sim-canvas:active {
   background: var(--color-gt);
   transform: scale(1.2);
 }
+
+/* Tooltips */
+.tooltip-trigger {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  color: var(--color-gt);
+  font-size: 0.9em;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+}
+
+.tooltip-trigger .tooltip {
+  visibility: hidden;
+  width: 220px;
+  background-color: var(--bg-card);
+  color: var(--text-secondary);
+  text-align: left;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  position: absolute;
+  z-index: 100;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -110px;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  transform: translateY(5px);
+  font-size: 0.725rem;
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  font-weight: 500;
+  line-height: 1.4;
+  text-transform: none;
+  letter-spacing: normal;
+  pointer-events: none;
+}
+
+.tooltip-trigger .tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--border-glass) transparent transparent transparent;
+}
+
+.tooltip-trigger:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
