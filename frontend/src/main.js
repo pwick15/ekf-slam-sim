@@ -91,6 +91,9 @@ const uiCallbacks = {
     } catch (e) {
       console.error("Error updating parameters:", e);
     }
+  },
+  onRecenter: () => {
+    transformer.fitToWorkspace();
   }
 };
 

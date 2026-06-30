@@ -1697,6 +1697,8 @@ canvas#sim-canvas:active {
 .hud-stat-box.rich {
   min-width: 140px;
   padding: 0.5rem 0.75rem;
+  min-height: 60px;
+  justify-content: center;
 }
 
 .hud-stat-header {

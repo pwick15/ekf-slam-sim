@@ -33,8 +33,8 @@ export class UIManager {
       lmInitCov: { input: document.getElementById('slider-lm-init-cov'), val: document.getElementById('val-lm-init-cov'), suffix: '' }
     };
     
-    // Track & speed
-    this.selectTrack = document.getElementById('select-track');
+    // Speed
+    this.inputSpeed = document.getElementById('input-speed');
     this.inputSpeed = document.getElementById('input-speed');
     this.btnApplyRestart = document.getElementById('btn-apply-restart');
     
@@ -44,6 +44,7 @@ export class UIManager {
     this.iconPause = this.btnPlayPause.querySelector('.icon-pause');
     this.btnStep = document.getElementById('btn-step');
     this.btnReset = document.getElementById('btn-reset');
+    this.btnRecenter = document.getElementById('btn-recenter');
     this.sliderSpeed = document.getElementById('slider-speed');
     this.valSpeed = document.getElementById('val-speed');
     
@@ -108,6 +109,12 @@ export class UIManager {
     this.btnReset.addEventListener('click', () => {
       this.callbacks.onReset();
     });
+    
+    if (this.btnRecenter) {
+      this.btnRecenter.addEventListener('click', () => {
+        if (this.callbacks.onRecenter) this.callbacks.onRecenter();
+      });
+    }
 
     this.sliderSpeed.addEventListener('input', () => {
       const val = parseFloat(this.sliderSpeed.value);
@@ -147,7 +154,6 @@ export class UIManager {
    * Syncs configuration parameters returned from server onto UI sliders/inputs.
    */
   syncConfig(settings, totalLandmarks) {
-    this.selectTrack.value = settings.track_type;
     this.inputSpeed.value = settings.vehicle_speed;
     
     this.sliders.qVel.input.value = settings.Q_velocity_std;
@@ -177,7 +183,7 @@ export class UIManager {
 
   getFormConfig() {
     return {
-      track_type: this.selectTrack.value,
+      track_type: 'figure_8',
       vehicle_speed: parseFloat(this.inputSpeed.value),
       Q_velocity_std: parseFloat(this.sliders.qVel.input.value),
       Q_omega_std: parseFloat(this.sliders.qOmega.input.value),
@@ -224,7 +230,7 @@ export class UIManager {
     this.hud.covTrace.textContent = m.cov_trace.toFixed(3);
     
     const discovered = stateData.landmarks ? Object.keys(stateData.landmarks).length : 0;
-    this.hud.discoveredLm.textContent = `${discovered} / ${this.totalLandmarks || 16}`;
+    this.hud.discoveredLm.textContent = `${discovered}/${this.totalLandmarks || 16}`;
     
     // 2. Append to history buffers for graphing
     this.posErrorHistory.push(m.pos_error);
