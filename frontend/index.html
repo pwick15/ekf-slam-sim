@@ -28,7 +28,7 @@
         <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H6c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
         Quick Guide
       </button>
-      <button id="btn-toggle-math" class="btn-secondary" style="margin-right: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+      <button id="btn-toggle-math" class="btn-secondary hidden" style="margin-right: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
         <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
         Math Explorer
       </button>
@@ -208,7 +208,28 @@
 
             <!-- Apply / Reset settings buttons -->
             <div class="btn-group">
-              <button id="btn-apply-restart" class="btn-primary">Restart Sim with Config</button>
+              <button id="btn-apply-restart" class="btn-primary" style="padding: 0.5rem 0;">Restart Sim with Config</button>
+            </div>
+            
+            <div class="divider" style="margin: 0.75rem 0; opacity: 0.5;"></div>
+            
+            <div class="setting-group" style="border: none; margin-top: auto; display: flex; flex-direction: column; padding-bottom: 0;">
+              <h3>Live EKF Matrices</h3>
+              <div class="matrix-preview-grid" style="display: flex; gap: 0.5rem; justify-content: space-between; margin-bottom: 0.5rem;">
+                <div style="flex: 1; text-align: center;">
+                  <span style="font-size: 0.6rem; color: var(--text-secondary); font-weight: 700;">State (x)</span>
+                  <div class="mini-matrix" id="mini-matrix-x" style="height: 30px; background: var(--bg-input); border: 1px solid var(--border-glass); border-radius: 6px; margin-top: 0.2rem; overflow: hidden; display: flex; align-items: center; justify-content: center;"></div>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                  <span style="font-size: 0.6rem; color: var(--text-secondary); font-weight: 700;">Covariance (P)</span>
+                  <div class="mini-matrix" id="mini-matrix-p" style="height: 30px; background: var(--bg-input); border: 1px solid var(--border-glass); border-radius: 6px; margin-top: 0.2rem; overflow: hidden; display: flex; align-items: center; justify-content: center;"></div>
+                </div>
+              </div>
+              <button id="btn-open-full-math" class="btn-secondary" style="width: 100%; font-size: 0.75rem; font-weight: 700; padding: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; border-radius: 8px;">
+                <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                Deep Dive Explorer 🔬
+              </button>
+            </div>
           </div>
       </section>
     </main>

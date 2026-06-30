@@ -220,6 +220,8 @@ class SimulationEngine:
             "gt_pose": self.gt_x.tolist(),
             "ekf_pose": self.ekf.x[:3].tolist(),
             "ekf_cov": self.ekf.P[:3, :3].tolist(),
+            "full_x": self.ekf.x.tolist(),
+            "full_P": self.ekf.P.tolist(),
             "observed_ids": observed_ids,
             "landmarks": self.ekf.get_landmark_positions(),
             "metrics": {

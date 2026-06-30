@@ -72,6 +72,9 @@ export class UIManager {
   }
 
   _bindEvents() {
+    this.btnOpenFullMath = document.getElementById('btn-open-full-math');
+    this.btnToggleMath = document.getElementById('btn-toggle-math'); // (now hidden in header)
+
     // Legend toggling
     if (this.btnLegend) {
       this.btnLegend.addEventListener('click', () => {
@@ -113,6 +116,14 @@ export class UIManager {
     if (this.btnRecenter) {
       this.btnRecenter.addEventListener('click', () => {
         if (this.callbacks.onRecenter) this.callbacks.onRecenter();
+      });
+    }
+
+    if (this.btnOpenFullMath) {
+      this.btnOpenFullMath.addEventListener('click', () => {
+        // Find btn-toggle-math and click it to open math_explorer
+        const btnToggleMath = document.getElementById('btn-toggle-math');
+        if (btnToggleMath) btnToggleMath.click();
       });
     }
 
@@ -244,6 +255,48 @@ export class UIManager {
 
     // 3. Render sparklines and full telemetry chart
     this.renderCharts();
+    
+    // 4. Render live mini-matrices in the sidebar
+    if (stateData.full_x) {
+      this._renderMiniMatrix('mini-matrix-x', stateData.full_x, false);
+    }
+    if (stateData.full_P) {
+      this._renderMiniMatrix('mini-matrix-p', stateData.full_P, true);
+    }
+  }
+
+  _renderMiniMatrix(containerId, data, is2D) {
+    const container = document.getElementById(containerId);
+    if (!container || !data) return;
+    
+    let rows, cols, values;
+    if (is2D && Array.isArray(data[0])) {
+      rows = data.length;
+      cols = data[0].length;
+      values = data.flat();
+    } else {
+      rows = data.length;
+      cols = 1;
+      values = data;
+    }
+    
+    const maxVal = Math.max(...values.map(Math.abs), 0.001);
+    
+    container.style.display = 'grid';
+    container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    container.style.gap = '0px';
+    container.innerHTML = '';
+    
+    values.forEach(val => {
+      const cell = document.createElement('div');
+      const intensity = Math.min(1.0, Math.abs(val) / maxVal);
+      const isPos = val >= 0;
+      // Pos = blue (210), Neg = red (10)
+      const hue = isPos ? '210' : '10';
+      cell.style.backgroundColor = `hsla(${hue}, 80%, 50%, ${intensity})`;
+      container.appendChild(cell);
+    });
   }
 
   resizeCharts() {

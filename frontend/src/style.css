@@ -396,7 +396,7 @@ canvas#sim-canvas:active {
 /* Setup Form Controls */
 .setting-group {
   border-bottom: 1px solid var(--border-glass);
-  padding-bottom: 0.65rem;
+  padding-bottom: 0.35rem;
 }
 
 .setting-group:last-child {
@@ -405,9 +405,9 @@ canvas#sim-canvas:active {
 }
 
 .setting-group h3 {
-  font-size: 0.75rem;
+  font-size: 0.675rem;
   font-weight: 800;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: var(--text-secondary);
@@ -423,11 +423,11 @@ canvas#sim-canvas:active {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.25rem;
 }
 
 .control-row label {
-  font-size: 0.775rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--text-secondary);
 }
@@ -476,14 +476,14 @@ canvas#sim-canvas:active {
 }
 
 .control-slider {
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.2rem;
 }
 
 .slider-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.25rem;
-  font-size: 0.725rem;
+  margin-bottom: 0.1rem;
+  font-size: 0.675rem;
   font-weight: 600;
 }
 
@@ -499,7 +499,7 @@ canvas#sim-canvas:active {
 
 .control-slider input[type="range"] {
   width: 100%;
-  height: 4px;
+  height: 3px;
   border-radius: 2px;
   background: rgba(28, 25, 23, 0.08);
   outline: none;
@@ -787,30 +787,28 @@ canvas#sim-canvas:active {
    ========================================================================== */
 .math-explorer-drawer {
   position: fixed;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 520px;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-top: 1.5px solid var(--border-glass-active);
-  z-index: 1000;
+  z-index: 2000;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 -10px 40px rgba(28, 25, 23, 0.06);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 1rem 2rem 1.5rem 2rem;
+  padding: 2rem 4rem;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
 .dark-theme .math-explorer-drawer {
-  background: rgba(10, 11, 28, 0.96);
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+  background: rgba(10, 11, 28, 0.98);
 }
 
 .math-explorer-drawer.hidden {
-  display: flex !important;
-  transform: translateY(105%);
+  display: none !important;
+  opacity: 0;
 }
 
 .drawer-header {
@@ -883,9 +881,12 @@ canvas#sim-canvas:active {
 .drawer-body {
   flex: 1;
   display: grid;
-  grid-template-columns: 460px 1fr;
-  gap: 1.25rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
   overflow: hidden;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* Math Explanation (Left Pane) */
@@ -1727,9 +1728,11 @@ canvas#sim-canvas:active {
 }
 
 .settings-panel {
-  padding: 1.5rem;
+  padding: 1rem;
   overflow-y: auto;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 
