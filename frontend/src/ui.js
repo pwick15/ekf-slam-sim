@@ -73,6 +73,7 @@ export class UIManager {
 
   _bindEvents() {
     this.btnOpenFullMath = document.getElementById('btn-open-full-math');
+    this.btnCloseFullMath = document.getElementById('btn-close-full-math');
     this.btnToggleMath = document.getElementById('btn-toggle-math'); // (now hidden in header)
 
     // Legend toggling
@@ -124,6 +125,44 @@ export class UIManager {
         // Find btn-toggle-math and click it to open math_explorer
         const btnToggleMath = document.getElementById('btn-toggle-math');
         if (btnToggleMath) btnToggleMath.click();
+      });
+    }
+
+    if (this.btnCloseFullMath) {
+      this.btnCloseFullMath.addEventListener('click', () => {
+        document.querySelector('.app-container').scrollIntoView({ behavior: 'smooth' });
+        
+        // Optionally close it after scrolling up
+        setTimeout(() => {
+          document.getElementById('math-explorer').classList.add('hidden');
+        }, 500); // Wait for smooth scroll
+      });
+    }
+
+    this.btnResetTuning = document.getElementById('btn-reset-tuning');
+    if (this.btnResetTuning) {
+      this.btnResetTuning.addEventListener('click', () => {
+        if (this.callbacks.onReset) {
+          // Reset DOM sliders to good default values
+          this.sliders.qVel.input.value = 0.05;
+          this.sliders.qOmega.input.value = 0.05;
+          this.sliders.qSteer.input.value = 0.02;
+          this.sliders.rNoise.input.value = 0.01;
+          this.sliders.range.input.value = 4.0;
+          this.sliders.fov.input.value = 180;
+          this.sliders.lmInitCov.input.value = 10.0;
+          
+          // Update text displays
+          this.sliders.qVel.val.textContent = "0.05";
+          this.sliders.qOmega.val.textContent = "0.05";
+          this.sliders.qSteer.val.textContent = "0.02";
+          this.sliders.rNoise.val.textContent = "0.01";
+          this.sliders.range.val.textContent = "4.0m";
+          this.sliders.fov.val.textContent = "180°";
+          this.sliders.lmInitCov.val.textContent = "10.0";
+          
+          this.callbacks.onReset();
+        }
       });
     }
 
@@ -265,9 +304,9 @@ export class UIManager {
     }
   }
 
-  _renderMiniMatrix(containerId, data, is2D) {
-    const container = document.getElementById(containerId);
-    if (!container || !data) return;
+  _renderMiniMatrix(canvasId, data, is2D) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || !data) return;
     
     let rows, cols, values;
     if (is2D && Array.isArray(data[0])) {
@@ -282,21 +321,40 @@ export class UIManager {
     
     const maxVal = Math.max(...values.map(Math.abs), 0.001);
     
-    container.style.display = 'grid';
-    container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-    container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    container.style.gap = '0px';
-    container.innerHTML = '';
+    // Set internal resolution to match matrix size for pixel-perfect heatmaps
+    if (canvas.width !== cols) canvas.width = cols;
+    if (canvas.height !== rows) canvas.height = rows;
     
-    values.forEach(val => {
-      const cell = document.createElement('div');
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(cols, rows);
+    
+    for (let i = 0; i < values.length; i++) {
+      const val = values[i];
       const intensity = Math.min(1.0, Math.abs(val) / maxVal);
       const isPos = val >= 0;
-      // Pos = blue (210), Neg = red (10)
-      const hue = isPos ? '210' : '10';
-      cell.style.backgroundColor = `hsla(${hue}, 80%, 50%, ${intensity})`;
-      container.appendChild(cell);
-    });
+      
+      // HSL to RGB approximation for speed
+      let r, g, b;
+      if (isPos) {
+        // Blue hue (~210)
+        r = Math.floor(40 + (215 * (1 - intensity)));
+        g = Math.floor(130 + (125 * (1 - intensity)));
+        b = 255;
+      } else {
+        // Red hue (~10)
+        r = 255;
+        g = Math.floor(60 + (195 * (1 - intensity)));
+        b = Math.floor(60 + (195 * (1 - intensity)));
+      }
+      
+      const idx = i * 4;
+      imgData.data[idx] = r;
+      imgData.data[idx + 1] = g;
+      imgData.data[idx + 2] = b;
+      imgData.data[idx + 3] = Math.floor(intensity * 255); // Alpha
+    }
+    
+    ctx.putImageData(imgData, 0, 0);
   }
 
   resizeCharts() {

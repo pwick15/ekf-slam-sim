@@ -119,6 +119,18 @@
             </button>
             <div class="divider"></div>
             
+            <button id="btn-apply-restart" class="btn-primary tooltip-trigger" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.3rem; border-radius: 12px;">
+              <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor;"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+              Apply
+              <span class="tooltip">Apply slider values and restart simulation</span>
+            </button>
+            <button id="btn-reset-tuning" class="btn-secondary tooltip-trigger" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.3rem; border-radius: 12px;">
+              <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor;"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+              Defaults
+              <span class="tooltip">Reset all sliders to good defaults</span>
+            </button>
+            <div class="divider"></div>
+            
             <div class="speed-control">
               <label for="slider-speed">Speed</label>
               <input type="range" id="slider-speed" min="0.25" max="4.0" step="0.25" value="1.0">
@@ -130,120 +142,113 @@
 
       <!-- Right side: Settings controls -->
       <section class="sidebar-section">
-        <div class="settings-panel card">
+        <div class="settings-panel">
             <!-- Setup & Environment parameters -->
-            <div class="setting-group">
-              <h3>Track & Environment</h3>
+            <div class="setting-group card" style="padding: 0.65rem 1rem; margin-bottom: 0.5rem;">
+              <h3 style="margin-top: 0; margin-bottom: 0.25rem;">Track & Environment</h3>
 
               <div class="control-row">
-                <label for="input-speed">Vehicle Speed (m/s)</label>
+                <label class="hud-label" for="input-speed">Vehicle Speed (m/s)</label>
                 <input type="number" id="input-speed" class="input-number" min="0.2" max="3.0" step="0.1" value="1.0">
               </div>
             </div>
 
             <!-- Noise matrices -->
-            <div class="setting-group">
-              <h3>Process Noise (Q) <span class="tooltip-trigger">ⓘ<span class="tooltip">Standard deviation of process noise injected into actuation.</span></span></h3>
+            <div class="setting-group card" style="padding: 0.65rem 1rem; margin-bottom: 0.5rem;">
+              <h3 style="margin-top: 0; margin-bottom: 0.25rem;">Process Noise (Q) <span class="tooltip-trigger">ⓘ<span class="tooltip">Standard deviation of process noise injected into actuation.</span></span></h3>
               
-              <div class="control-slider">
-                <div class="slider-header">
-                  <label for="slider-q-vel">Linear Velocity (σ<sub>v</sub>)</label>
-                  <span id="val-q-vel">0.05</span>
+              <div class="sliders-grid" style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <div class="control-slider">
+                  <div class="slider-header">
+                    <label class="hud-label" for="slider-q-vel">Linear Velocity (σ<sub>v</sub>)</label>
+                    <span class="hud-val" id="val-q-vel">0.05</span>
+                  </div>
+                  <input type="range" id="slider-q-vel" min="0.0" max="0.3" step="0.01" value="0.05">
                 </div>
-                <input type="range" id="slider-q-vel" min="0.0" max="0.3" step="0.01" value="0.05">
+                
+                <div class="control-slider">
+                  <div class="slider-header">
+                    <label class="hud-label" for="slider-q-omega">Angular Rate (σ<sub>ω</sub>)</label>
+                    <span class="hud-val" id="val-q-omega">0.05</span>
+                  </div>
+                  <input type="range" id="slider-q-omega" min="0.0" max="0.3" step="0.01" value="0.05">
+                </div>
+
+                <div class="control-slider">
+                  <div class="slider-header">
+                    <label class="hud-label" for="slider-q-steer">Steering Drift (σ<sub>steer</sub>)</label>
+                    <span class="hud-val" id="val-q-steer">0.02</span>
+                  </div>
+                  <input type="range" id="slider-q-steer" min="0.0" max="0.2" step="0.01" value="0.02">
+                </div>
               </div>
+            </div>
+
+            <div class="setting-group card" style="padding: 0.65rem 1rem; margin-bottom: 0.5rem;">
+              <h3 style="margin-top: 0; margin-bottom: 0.25rem;">Sensor & Measurement (R) <span class="tooltip-trigger">ⓘ<span class="tooltip">Sensor range limit, field of view, and observation error covariance (R).</span></span></h3>
               
-              <div class="control-slider">
-                <div class="slider-header">
-                  <label for="slider-q-omega">Angular Rate (σ<sub>ω</sub>)</label>
-                  <span id="val-q-omega">0.05</span>
+              <div class="sliders-grid" style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <div class="control-slider">
+                  <div class="slider-header">
+                    <label class="hud-label" for="slider-r-noise">Measurement Noise (σ<sub>lm</sub>)</label>
+                    <span class="hud-val" id="val-r-noise">0.01</span>
+                  </div>
+                  <input type="range" id="slider-r-noise" min="0.001" max="0.1" step="0.001" value="0.01">
                 </div>
-                <input type="range" id="slider-q-omega" min="0.0" max="0.3" step="0.01" value="0.05">
-              </div>
 
-              <div class="control-slider">
-                <div class="slider-header">
-                  <label for="slider-q-steer">Steering Drift (σ<sub>steer</sub>)</label>
-                  <span id="val-q-steer">0.02</span>
+                <div class="control-slider">
+                  <div class="slider-header">
+                    <label class="hud-label" for="slider-sensor-range">Max Scan Range</label>
+                    <span class="hud-val" id="val-sensor-range">4.0m</span>
+                  </div>
+                  <input type="range" id="slider-sensor-range" min="1.0" max="6.0" step="0.2" value="4.0">
                 </div>
-                <input type="range" id="slider-q-steer" min="0.0" max="0.2" step="0.01" value="0.02">
+
+                <div class="control-slider">
+                  <div class="slider-header">
+                    <label class="hud-label" for="slider-sensor-fov">Sensor FOV</label>
+                    <span class="hud-val" id="val-sensor-fov">180°</span>
+                  </div>
+                  <input type="range" id="slider-sensor-fov" min="30" max="360" step="10" value="180">
+                </div>
+
+                <div class="control-slider">
+                  <div class="slider-header">
+                    <label class="hud-label" for="slider-lm-init-cov">Initial Landmark Cov</label>
+                    <span class="hud-val" id="val-lm-init-cov">10.0</span>
+                  </div>
+                  <input type="range" id="slider-lm-init-cov" min="1.0" max="50.0" step="1.0" value="10.0">
+                </div>
               </div>
             </div>
 
-            <div class="setting-group">
-              <h3>Sensor & Measurement (R) <span class="tooltip-trigger">ⓘ<span class="tooltip">Sensor range limit, field of view, and observation error covariance (R).</span></span></h3>
-              
-              <div class="control-slider">
-                <div class="slider-header">
-                  <label for="slider-r-noise">Measurement Noise (σ<sub>lm</sub>)</label>
-                  <span id="val-r-noise">0.01</span>
-                </div>
-                <input type="range" id="slider-r-noise" min="0.001" max="0.1" step="0.001" value="0.01">
-              </div>
-
-              <div class="control-slider">
-                <div class="slider-header">
-                  <label for="slider-sensor-range">Max Scan Range</label>
-                  <span id="val-sensor-range">4.0m</span>
-                </div>
-                <input type="range" id="slider-sensor-range" min="1.0" max="6.0" step="0.2" value="4.0">
-              </div>
-
-              <div class="control-slider">
-                <div class="slider-header">
-                  <label for="slider-sensor-fov">Sensor FOV</label>
-                  <span id="val-sensor-fov">180°</span>
-                </div>
-                <input type="range" id="slider-sensor-fov" min="30" max="360" step="10" value="180">
-              </div>
-
-              <div class="control-slider">
-                <div class="slider-header">
-                  <label for="slider-lm-init-cov">Initial Landmark Cov</label>
-                  <span id="val-lm-init-cov">10.0</span>
-                </div>
-                <input type="range" id="slider-lm-init-cov" min="1.0" max="50.0" step="1.0" value="10.0">
-              </div>
-            </div>
-
-            <!-- Apply / Reset settings buttons -->
-            <div class="btn-group">
-              <button id="btn-apply-restart" class="btn-primary" style="padding: 0.5rem 0;">Restart Sim with Config</button>
-            </div>
-            
-            <div class="divider" style="margin: 0.75rem 0; opacity: 0.5;"></div>
-            
-            <div class="setting-group" style="border: none; margin-top: auto; display: flex; flex-direction: column; padding-bottom: 0;">
-              <h3>Live EKF Matrices</h3>
-              <div class="matrix-preview-grid" style="display: flex; gap: 0.5rem; justify-content: space-between; margin-bottom: 0.5rem;">
-                <div style="flex: 1; text-align: center;">
-                  <span style="font-size: 0.6rem; color: var(--text-secondary); font-weight: 700;">State (x)</span>
-                  <div class="mini-matrix" id="mini-matrix-x" style="height: 30px; background: var(--bg-input); border: 1px solid var(--border-glass); border-radius: 6px; margin-top: 0.2rem; overflow: hidden; display: flex; align-items: center; justify-content: center;"></div>
-                </div>
-                <div style="flex: 1; text-align: center;">
-                  <span style="font-size: 0.6rem; color: var(--text-secondary); font-weight: 700;">Covariance (P)</span>
-                  <div class="mini-matrix" id="mini-matrix-p" style="height: 30px; background: var(--bg-input); border: 1px solid var(--border-glass); border-radius: 6px; margin-top: 0.2rem; overflow: hidden; display: flex; align-items: center; justify-content: center;"></div>
-                </div>
-              </div>
-              <button id="btn-open-full-math" class="btn-secondary" style="width: 100%; font-size: 0.75rem; font-weight: 700; padding: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; border-radius: 8px;">
-                <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
-                Deep Dive Explorer 🔬
-              </button>
-            </div>
           </div>
       </section>
     </main>
+    
+    <!-- Full Width Underside Button -->
+    <button id="btn-open-full-math" class="btn-primary" style="width: 100%; border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 0.65rem; margin-top: 0.5rem; transition: all 0.3s ease;">
+      <span style="font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: white;">Explore Live Math & State Data</span>
+      <svg class="bounce-arrow" viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: white;"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+    </button>
   </div>
 
   <!-- SLIDING MATH EXPLORER BOTTOM PANEL -->
-  <div id="math-explorer" class="math-explorer-drawer hidden">
+  <div id="math-explorer" class="math-explorer-section hidden" style="min-height: 100vh;">
+    <!-- Back to Sim Button -->
+    <div style="width: 100%; display: flex; justify-content: center; padding: 1.5rem 0;">
+      <button id="btn-close-full-math" style="background: transparent; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; color: var(--text-secondary); transition: color 0.2s;">
+        <svg class="bounce-arrow-up" viewBox="0 0 24 24" style="width: 28px; height: 28px; fill: currentColor; transform: rotate(180deg);"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        <span style="font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">Back to Simulation</span>
+      </button>
+    </div>
+
     <div class="drawer-header">
       <div class="drawer-title-box">
         <h2>EKF Mathematics & Matrix Explorer</h2>
         <span class="drawer-tag">Educational Sandbox</span>
         <span class="drawer-notice" id="math-notice">Pause simulation to view live values</span>
       </div>
-      <button id="btn-close-math" class="btn-close" title="Close Explorer">&times;</button>
     </div>
     
     <div class="drawer-body">

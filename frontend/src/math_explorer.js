@@ -34,17 +34,14 @@ export class MathExplorer {
 
   _bindEvents() {
     // Open panel
-    this.btnToggle.addEventListener('click', () => {
-      this.container.classList.remove('hidden');
-      this.fetchMathState();
-      // Scroll to show it
-      this.container.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // Close panel
-    this.btnClose.addEventListener('click', () => {
-      this.container.classList.add('hidden');
-    });
+    if (this.btnToggle) {
+      this.btnToggle.addEventListener('click', () => {
+        this.container.classList.remove('hidden');
+        this.fetchMathState();
+        // Scroll to show it
+        this.container.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
 
     // Select matrix to inspect
     this.selectMatrix.addEventListener('change', () => {

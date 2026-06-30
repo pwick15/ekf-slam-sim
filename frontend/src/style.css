@@ -407,7 +407,8 @@ canvas#sim-canvas:active {
 .setting-group h3 {
   font-size: 0.675rem;
   font-weight: 800;
-  margin-bottom: 0.15rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.35rem;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: var(--text-secondary);
@@ -498,16 +499,46 @@ canvas#sim-canvas:active {
 }
 
 .control-slider input[type="range"] {
+  -webkit-appearance: none;
   width: 100%;
-  height: 3px;
-  border-radius: 2px;
+  height: 6px;
+  border-radius: 4px;
   background: rgba(28, 25, 23, 0.08);
   outline: none;
-  accent-color: var(--color-gt);
+  margin-top: 4px;
+  margin-bottom: 2px;
 }
 
 .dark-theme .control-slider input[type="range"] {
   background: rgba(255, 255, 255, 0.08);
+}
+
+.control-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid var(--color-gt);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.control-slider input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.control-slider input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid var(--color-gt);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .btn-group {
@@ -785,30 +816,33 @@ canvas#sim-canvas:active {
 /* ==========================================================================
    Interactive Math & Matrix Explorer Bottom Panel
    ========================================================================== */
-.math-explorer-drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  z-index: 2000;
+.math-explorer-section {
   display: flex;
   flex-direction: column;
-  padding: 2rem 4rem;
+  padding: 3rem 0 2rem 0;
+  max-width: 1400px;
+  margin: 0 auto;
   opacity: 1;
   transition: opacity 0.3s ease;
 }
 
-.dark-theme .math-explorer-drawer {
-  background: rgba(10, 11, 28, 0.98);
-}
-
-.math-explorer-drawer.hidden {
+.math-explorer-section.hidden {
   display: none !important;
   opacity: 0;
+}
+
+@keyframes bounce-arrow {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(5px); }
+  60% { transform: translateY(3px); }
+}
+
+.bounce-arrow {
+  animation: bounce-arrow 2s infinite;
+}
+
+.scroll-prompt-btn:hover {
+  opacity: 1 !important;
 }
 
 .drawer-header {
