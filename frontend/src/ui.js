@@ -248,7 +248,7 @@ export class UIManager {
     this.telemetry.lmRmse.textContent = `${m.landmark_rmse.toFixed(3)} m`;
     this.telemetry.covTrace.textContent = m.cov_trace.toFixed(3);
     
-    const discovered = stateData.idx2num ? stateData.idx2num.length : 0;
+    const discovered = stateData.landmarks ? Object.keys(stateData.landmarks).length : 0;
     this.telemetry.discoveredLm.textContent = `${discovered} / ${this.totalLandmarks || 16}`;
     
     // 2. Append to history buffers for graphing
@@ -289,8 +289,6 @@ export class UIManager {
     this._drawSparkline(this.sparklineCanvas.pos, this.posErrorHistory, '#3b82f6');
     this._drawSparkline(this.sparklineCanvas.lm, this.lmRmseHistory, '#10b981');
     this._drawSparkline(this.sparklineCanvas.cov, this.covTraceHistory, '#f97316');
-    
-    this._drawMainChart();
   }
 
   _drawSparkline(canvas, data, color) {
@@ -331,93 +329,4 @@ export class UIManager {
     ctx.fill();
     ctx.restore();
   }
-
-  _drawMainChart() {
-    const canvas = this.chartError;
-    if (!canvas || this.posErrorHistory.length < 2) return;
-    
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width / window.devicePixelRatio;
-    const height = canvas.height / window.devicePixelRatio;
-    
-    ctx.clearRect(0, 0, width, height);
-    
-    const maxVal = Math.max(...this.posErrorHistory, 0.1);
-    const minVal = 0;
-    const range = maxVal - minVal;
-    
-    const padLeft = 32;
-    const padBottom = 16;
-    const padTop = 10;
-    const padRight = 10;
-    
-    const chartW = width - padLeft - padRight;
-    const chartH = height - padBottom - padTop;
-    
-    ctx.save();
-    
-    // Draw background grid lines (horizontal)
-    ctx.strokeStyle = 'rgba(15, 23, 42, 0.04)';
-    ctx.lineWidth = 1;
-    
-    const gridLines = 4;
-    ctx.fillStyle = 'var(--text-secondary)';
-    ctx.font = '8px monospace';
-    ctx.textAlign = 'right';
-    
-    for (let i = 0; i <= gridLines; i++) {
-      const val = minVal + (range * i) / gridLines;
-      const y = padTop + chartH - (i / gridLines) * chartH;
-      
-      ctx.beginPath();
-      ctx.moveTo(padLeft, y);
-      ctx.lineTo(width - padRight, y);
-      ctx.stroke();
-      
-      ctx.fillText(val.toFixed(2), padLeft - 6, y + 3);
-    }
-    
-    // Draw data path (Indigo blue curve, no glow shadow)
-    ctx.strokeStyle = '#3b82f6';
-    ctx.lineWidth = 2.0;
-    ctx.shadowBlur = 0;
-    ctx.beginPath();
-    
-    this.posErrorHistory.forEach((val, idx) => {
-      const x = padLeft + (idx / (this.posErrorHistory.length - 1)) * chartW;
-      const y = padTop + chartH - ((val - minVal) / range) * chartH;
-      
-      if (idx === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
-      }
-    });
-    ctx.stroke();
-    
-    // Gradient fill under the error curve
-    ctx.shadowBlur = 0;
-    ctx.lineTo(padLeft + chartW, padTop + chartH);
-    ctx.lineTo(padLeft, padTop + chartH);
-    ctx.closePath();
-    
-    const grad = ctx.createLinearGradient(0, padTop, 0, padTop + chartH);
-    grad.addColorStop(0, 'rgba(59, 130, 246, 0.15)');
-    grad.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
-    ctx.fillStyle = grad;
-    ctx.fill();
-    
-    // Border axes
-    ctx.strokeStyle = 'var(--border-glass)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(padLeft, padTop);
-    ctx.lineTo(padLeft, padTop + chartH);
-    ctx.lineTo(width - padRight, padTop + chartH);
-    ctx.stroke();
-    
-    ctx.restore();
-  }
-
-
 }

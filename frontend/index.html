@@ -195,32 +195,27 @@
             <div class="telemetry-panel">
               <div class="telemetry-grid">
                 <div class="telemetry-box">
-                  <span class="telemetry-box-label">Position Error</span>
+                  <span class="telemetry-box-label">Position Error <span class="tooltip-trigger">ⓘ<span class="tooltip">Euclidean distance between the true robot position and the EKF's estimated position.</span></span></span>
                   <span class="telemetry-box-val" id="metrics-pos-error">0.000 m</span>
                   <div class="sparkline-container"><canvas id="sparkline-pos"></canvas></div>
                 </div>
                 <div class="telemetry-box">
-                  <span class="telemetry-box-label">Landmark RMSE</span>
+                  <span class="telemetry-box-label">Landmark RMSE <span class="tooltip-trigger">ⓘ<span class="tooltip">Root Mean Square Error of all currently estimated landmark positions compared to their true locations.</span></span></span>
                   <span class="telemetry-box-val" id="metrics-lm-rmse">0.000 m</span>
                   <div class="sparkline-container"><canvas id="sparkline-lm"></canvas></div>
                 </div>
                 <div class="telemetry-box">
-                  <span class="telemetry-box-label">Covariance Trace</span>
+                  <span class="telemetry-box-label">Covariance Trace <span class="tooltip-trigger">ⓘ<span class="tooltip">Sum of the diagonal elements of the covariance matrix. Represents the total overall uncertainty in the system.</span></span></span>
                   <span class="telemetry-box-val" id="metrics-cov-trace">0.000</span>
                   <div class="sparkline-container"><canvas id="sparkline-cov"></canvas></div>
                 </div>
                 <div class="telemetry-box">
-                  <span class="telemetry-box-label">Discovered Map</span>
+                  <span class="telemetry-box-label">Discovered Landmarks <span class="tooltip-trigger">ⓘ<span class="tooltip">Number of unique landmarks observed by the robot at least once out of the total available map.</span></span></span>
                   <span class="telemetry-box-val" id="metrics-discovered-lm">0 / 16</span>
                 </div>
               </div>
 
-              <div class="chart-box card">
-                <h4>Localization Error Over Time</h4>
-                <div class="error-chart-container">
-                  <canvas id="error-history-chart"></canvas>
-                </div>
-              </div>
+
 
               <div class="legend-box">
                 <h4>Visualization Legend</h4>
