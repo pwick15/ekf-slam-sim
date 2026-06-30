@@ -141,26 +141,31 @@ export class UIManager {
     this.btnResetTuning = document.getElementById('btn-reset-tuning');
     if (this.btnResetTuning) {
       this.btnResetTuning.addEventListener('click', () => {
-        if (this.callbacks.onReset) {
-          // Reset DOM sliders to good default values
-          this.sliders.qVel.input.value = 0.05;
-          this.sliders.qOmega.input.value = 0.05;
-          this.sliders.qSteer.input.value = 0.02;
-          this.sliders.rNoise.input.value = 0.01;
-          this.sliders.range.input.value = 4.0;
-          this.sliders.fov.input.value = 180;
-          this.sliders.lmInitCov.input.value = 10.0;
-          
-          // Update text displays
-          this.sliders.qVel.val.textContent = "0.05";
-          this.sliders.qOmega.val.textContent = "0.05";
-          this.sliders.qSteer.val.textContent = "0.02";
-          this.sliders.rNoise.val.textContent = "0.01";
-          this.sliders.range.val.textContent = "4.0m";
-          this.sliders.fov.val.textContent = "180°";
-          this.sliders.lmInitCov.val.textContent = "10.0";
-          
-          this.callbacks.onReset();
+        // Reset DOM sliders to good default values
+        this.sliders.qVel.input.value = 0.15;
+        this.sliders.qOmega.input.value = 0.15;
+        this.sliders.qSteer.input.value = 0.08;
+        this.sliders.rNoise.input.value = 0.05;
+        this.sliders.range.input.value = 4.0;
+        this.sliders.fov.input.value = 180;
+        this.sliders.lmInitCov.input.value = 10.0;
+        
+        if (this.inputSpeed) {
+          this.inputSpeed.value = 1.0;
+        }
+        
+        // Update text displays
+        this.sliders.qVel.val.textContent = "0.15";
+        this.sliders.qOmega.val.textContent = "0.15";
+        this.sliders.qSteer.val.textContent = "0.08";
+        this.sliders.rNoise.val.textContent = "0.05";
+        this.sliders.range.val.textContent = "4.0m";
+        this.sliders.fov.val.textContent = "180°";
+        this.sliders.lmInitCov.val.textContent = "10.0";
+        
+        // Restart simulation with these new defaults
+        if (this.callbacks.onRestart) {
+          this.callbacks.onRestart(this.getFormConfig());
         }
       });
     }
