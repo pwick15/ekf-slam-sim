@@ -163,32 +163,7 @@ body {
   font-weight: 500;
 }
 
-.header-status {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.775rem;
-  background: var(--bg-input);
-  padding: 0.45rem 1rem;
-  border-radius: 30px;
-  border: 1px solid var(--border-glass);
-  box-shadow: inset 0 1px 2px rgba(28, 25, 23, 0.04);
-}
 
-.status-indicator {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #ff4a4a;
-  box-shadow: 0 0 8px #ff4a4a;
-}
-
-.status-indicator.connected {
-  background: var(--color-lm);
-  box-shadow: 0 0 8px var(--color-lm);
-}
 
 /* Main Grid Layout */
 .app-body {

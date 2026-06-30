@@ -120,20 +120,13 @@ function sendWsMessage(obj) {
 
 // WebSocket Connection
 function connectWebSocket() {
-  const statusIndicator = document.getElementById('connection-status');
-  const statusText = document.getElementById('connection-text');
-  
   socket = new WebSocket(WS_URL);
   
   socket.onopen = () => {
-    statusIndicator.className = 'status-indicator connected';
-    statusText.textContent = 'Connected';
     console.log("WebSocket connected to EKF server");
   };
   
   socket.onclose = () => {
-    statusIndicator.className = 'status-indicator';
-    statusText.textContent = 'Disconnected (Retrying...)';
     console.log("WebSocket connection closed, retrying in 3s...");
     setTimeout(connectWebSocket, 3000);
   };
