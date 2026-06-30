@@ -5,7 +5,7 @@
   "steer_noise_std": 0.11,
   "sensor_range": 4.2,
   "sensor_fov_deg": 40.0,
-  "sig_lm": 0.083,
+  "sig_lm": 0.089,
   "initial_landmark_cov": 37.0,
   "vehicle_speed": 1.0,
   "num_landmarks": 16,
