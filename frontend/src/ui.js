@@ -232,7 +232,6 @@ export class UIManager {
 
   getFormConfig() {
     return {
-      track_type: 'figure_8',
       vehicle_speed: parseFloat(this.inputSpeed.value),
       Q_velocity_std: parseFloat(this.sliders.qVel.input.value),
       Q_omega_std: parseFloat(this.sliders.qOmega.input.value),

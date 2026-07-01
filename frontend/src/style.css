@@ -21,6 +21,9 @@
   --color-lm: #0f766e;         /* Deep teal green */
   --color-sensor: rgba(29, 78, 216, 0.06);
   
+  --tooltip-bg: #1c1917;
+  --tooltip-text: #ffffff;
+  
   --font-ui: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
@@ -55,6 +58,9 @@
   --color-ekf: #ffb347;        /* Glowing amber */
   --color-lm: #00ff88;         /* Glowing emerald green */
   --color-sensor: rgba(0, 212, 255, 0.15);
+  
+  --tooltip-bg: #ffffff;
+  --tooltip-text: #1c1917;
   
   --shadow-glow: 0 8px 20px -5px rgba(0, 212, 255, 0.25);
   --shadow-glow-ekf: 0 8px 20px -5px rgba(255, 179, 71, 0.25);
@@ -1695,8 +1701,8 @@ canvas#sim-canvas:active {
 .tooltip-trigger .tooltip {
   visibility: hidden;
   width: 220px;
-  background-color: var(--bg-card);
-  color: var(--text-secondary);
+  background-color: var(--tooltip-bg);
+  color: var(--tooltip-text);
   text-align: left;
   border-radius: 8px;
   padding: 0.65rem 0.85rem;
@@ -1726,7 +1732,7 @@ canvas#sim-canvas:active {
   margin-left: -6px;
   border-width: 6px;
   border-style: solid;
-  border-color: var(--border-glass) transparent transparent transparent;
+  border-color: var(--tooltip-bg) transparent transparent transparent;
 }
 
 .tooltip-trigger:hover .tooltip {

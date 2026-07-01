@@ -34,7 +34,6 @@ class SimSettings(BaseModel):
     # Simulation layout
     num_landmarks: int = Field(default=16, description="Number of landmarks to place in the environment")
     landmark_seed: int = Field(default=42, description="Random seed for landmark placement reproducibility")
-    track_type: str = Field(default="city_zigzag", description="The course track type: 'oval', 'figure_8', 's_curve', or 'city_zigzag'")
 
 def load_settings() -> SimSettings:
     """Loads the settings from config/parameters.json or returns default settings if not found."""

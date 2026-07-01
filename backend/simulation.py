@@ -4,67 +4,31 @@ from backend.config import SimSettings
 from backend.ekf_slam import EKFSlam
 
 class Track:
-    def __init__(self, track_type: str = "city_zigzag", num_points: int = 400):
-        self.track_type = track_type
+    def __init__(self, num_points: int = 400):
         self.num_points = num_points
         self.points = self._generate_track_points()
 
     def _generate_track_points(self) -> np.ndarray:
-        """Generates a closed-loop track as a 2D numpy array of shape (N, 2)."""
-        t = np.linspace(0, 2 * np.pi, self.num_points, endpoint=False)
-        points = []
-
-        if self.track_type == "oval":
-            # An oval track in [0.5, 4.5] x [0.5, 4.5]
-            # Center at (2.5, 2.5), radii 1.8 and 1.3
-            x = 2.5 + 1.8 * np.cos(t)
-            y = 2.5 + 1.3 * np.sin(t)
-            points = np.column_stack((x, y))
-
-        elif self.track_type == "figure_8":
-            # A figure-8 (lemniscate of Bernoulli) centered at (2.5, 2.5)
-            # Scaled to fit within [0.7, 4.3]
-            scale = 1.8
-            x = 2.5 + (scale * np.cos(t)) / (1 + np.sin(t)**2)
-            y = 2.5 + (scale * np.sin(t) * np.cos(t)) / (1 + np.sin(t)**2)
-            points = np.column_stack((x, y))
-
-        elif self.track_type == "s_curve":
-            # An S-shaped winding track that wraps back on itself in a closed loop
-            # Built by morphing a circle with high-frequency sine waves
-            r = 1.4 + 0.4 * np.sin(3 * t)
-            x = 2.5 + r * np.cos(t)
-            y = 2.5 + r * np.sin(t)
-            points = np.column_stack((x, y))
-
-        elif self.track_type == "city_zigzag":
-            # A zigzag track with sharp 90-degree corners
-            # We define waypoints and interpolate between them to make a continuous track
-            waypoints = np.array([
-                [1.0, 1.0],
-                [4.0, 1.0],
-                [4.0, 2.5],
-                [2.5, 2.5],
-                [2.5, 4.0],
-                [1.0, 4.0],
-                [1.0, 2.5],
-                [1.0, 1.0] # Close the loop
-            ])
-            # Interpolate between waypoints to get a dense set of points
-            pts_per_segment = self.num_points // (len(waypoints) - 1)
-            interpolated = []
-            for i in range(len(waypoints) - 1):
-                seg = np.linspace(waypoints[i], waypoints[i+1], pts_per_segment, endpoint=False)
-                interpolated.append(seg)
-            points = np.vstack(interpolated)
-
-        else:
-            # Fallback to simple circle
-            x = 2.5 + 1.5 * np.cos(t)
-            y = 2.5 + 1.5 * np.sin(t)
-            points = np.column_stack((x, y))
-
-        return points
+        """Generates a closed-loop zigzag track as a 2D numpy array of shape (N, 2)."""
+        waypoints = np.array([
+            [1.0, 1.0],
+            [4.0, 1.0],
+            [4.0, 2.5],
+            [2.5, 2.5],
+            [2.5, 4.0],
+            [1.0, 4.0],
+            [1.0, 2.5],
+            [1.0, 1.0] # Close the loop
+        ])
+        
+        # Interpolate between waypoints to get a dense set of points
+        pts_per_segment = self.num_points // (len(waypoints) - 1)
+        interpolated = []
+        for i in range(len(waypoints) - 1):
+            seg = np.linspace(waypoints[i], waypoints[i+1], pts_per_segment, endpoint=False)
+            interpolated.append(seg)
+            
+        return np.vstack(interpolated)
 
     def get_closest_point_index(self, pos: np.ndarray) -> int:
         """Finds index of the track point closest to position pos."""
@@ -93,7 +57,7 @@ class Track:
 class SimulationEngine:
     def __init__(self, settings: SimSettings):
         self.settings = settings
-        self.track = Track(track_type=settings.track_type)
+        self.track = Track()
         
         # Generate landmarks
         self.landmarks_true = self._generate_landmarks()
