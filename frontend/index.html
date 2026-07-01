@@ -403,8 +403,30 @@
           </div>
         </div>
 
-        <!-- Slide 5: Visualizing Robot -->
+        <!-- Slide 5: Modeling Noise -->
         <div class="tutorial-slide" data-slide="5">
+          <div class="slide-icon-wrapper">
+            <svg class="slide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+          </div>
+          <h2>Modeling Noise</h2>
+          <p class="slide-subtitle">Where does the uncertainty come from?</p>
+          <div class="slide-content text-center">
+            <p>Real-world sensors and motors are imperfect. We simulate this by injecting <strong>Gaussian Noise</strong> at two key points:</p>
+            <div class="challenges-list text-left mt-4">
+              <div class="challenge-card">
+                <h4>1. Motion Uncertainty (Process Noise)</h4>
+                <p>When the robot moves, its wheels slip. We inject random noise into its linear velocity and steering angle at every step. This makes the true robot physically drift from its expected path.</p>
+              </div>
+              <div class="challenge-card">
+                <h4>2. Measurement Uncertainty (Sensor Noise)</h4>
+                <p>When the LiDAR detects a landmark, the distance and angle readouts are intentionally degraded with noise, simulating a cheap, imperfect sensor.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 6: Visualizing Robot -->
+        <div class="tutorial-slide" data-slide="6">
           <div class="slide-icon-wrapper">
             <svg class="slide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
           </div>
@@ -428,8 +450,8 @@
           </div>
         </div>
 
-        <!-- Slide 6: Visualizing Environment -->
-        <div class="tutorial-slide" data-slide="6">
+        <!-- Slide 7: Visualizing Environment -->
+        <div class="tutorial-slide" data-slide="7">
           <div class="slide-icon-wrapper">
             <svg class="slide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
           </div>
@@ -454,8 +476,8 @@
           </div>
         </div>
 
-        <!-- Slide 7: Interactive Sandbox -->
-        <div class="tutorial-slide" data-slide="7">
+        <!-- Slide 8: Interactive Sandbox -->
+        <div class="tutorial-slide" data-slide="8">
           <div class="slide-icon-wrapper">
             <svg class="slide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19.3 16.9c.4-.7.7-1.5.7-2.4 0-2.8-2.2-5-5-5s-5 2.2-5 5 2.2 5 5 5c.9 0 1.7-.3 2.4-.7l3.2 3.2 1.4-1.4-3.4-3.7zM15 17.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
           </div>
@@ -470,7 +492,7 @@
               </div>
               <div class="challenge-card">
                 <h4>🔬 Live Matrix Inspector</h4>
-                <p>Open the <strong>Math Explorer</strong> at the bottom to inspect actual values inside the EKF state matrices computed live!</p>
+                <p>Click the <strong>Explore Live Math & State Data</strong> button at the bottom of the right panel to inspect the actual values inside the EKF state matrices computed live!</p>
               </div>
             </div>
           </div>
@@ -488,6 +510,7 @@
           <span class="dot" data-slide="5"></span>
           <span class="dot" data-slide="6"></span>
           <span class="dot" data-slide="7"></span>
+          <span class="dot" data-slide="8"></span>
         </div>
         <button id="btn-tutorial-next" class="btn-primary">Next</button>
       </div>
