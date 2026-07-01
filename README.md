@@ -13,16 +13,16 @@ For anyone who's interested in learning about and tinkering with an EKF-SLAM sim
 
 ---
 
-## Core Features (Beyond the Obvious)
+## Core Features
 
 *   **Immersive Onboarding & Educational Slides**:
-    *   An intentionally designed slide deck that loads on startup explaining the mathematics behind EKF-SLAM (dead reckoning, prediction/correction loops, state vectors, and covariance matrices).
+    *   An slide deck that loads on startup that introduces the problem that EKF-SLAM solves and how it does so by diving into the mathematics of the algorithm (dead reckoning, prediction/correction loops, state vectors, and covariance matrices).
 *   **Bilateral Noise Modeling (Gaussian)**:
-    *  The EKF only has access to the *commanded* (noisy) inputs, mirroring real-world encoder/odometry limits.
+    *  The EKF only has access to noisy inputs, mirroring real-world encoder/odometry limits.
     *  Steering controls are injected with noise to simulate imperfect track-line detection.
     *  Body-frame relative scans of landmarks are corrupted by configurable Gaussian distance and bearing errors.
 *   **Live Vector Updates**:
-    Real-time transformation of the filter's state vector $x$ and covariance matrix $P$ as new landmarks enter the vehicle's field of view.
+    Real-time transformation of the filter's state vector $x$ and covariance matrix $P$ can be seen at static moments of time, as new landmarks enter the vehicle's field of view.
 
 ---
 
@@ -31,8 +31,6 @@ For anyone who's interested in learning about and tinkering with an EKF-SLAM sim
 *   **Backend**: Python 3.10+, built using **FastAPI** and **NumPy**. The math of the prediction, update, and state augmentation remains centralized in Python.
 *   **Frontend**: Built with **Vite** and **Vanilla Javascript**.
 *   **Visualizer**: High-performance **HTML Canvas 2D**.
-*   **Custom Charting Engine**: Telemetry sparklines and comparison charts are drawn dynamically using Canvas2D, avoiding external heavy library bundles.
-
 ---
 
 ## 🚀 Setup & Installation
